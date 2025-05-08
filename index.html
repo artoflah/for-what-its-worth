@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" style="margin:0; padding:0; overflow:hidden;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>for what it's worth.</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle">LIGHT MODE</button>
+    
+    <button class="about-button" id="aboutToggle">
+        ABOUT
+    </button>
+    
+    <div class="about-modal" id="aboutModal">
+        <div class="about-content">
+            <div class="about-close">&times;</div>
+            <h2>"For What It's Worth."</h2>
+            <p> <strong><em>phrase</em></strong> <br> The moment we decide to not be afraid of our actions & decisions. When we take a step outside the box from our safety net. The courage we take when the outcome isn't guaranteed. When there isn't a define yes or no, is this good or not.</p>
+            <p>For what it's worth is like investing all your money into a passion project knowing you have no fall back. Or putting all your love into someone who might not withstand time. Or voicing an opinion when there is no need to.</p>
+            <p>For what it's worth is the gap between what we sacrifice and what we might receive. It's recognizing that sometimes value isn't measured in guaranteed outcomes but in the willingness to risk something precious—our ideas, our vulnerabilities, our hearts—knowing full well they might be dismissed, misunderstood, or broken.</p>
+            <p>It's knowing nothing is for certain but still making the choice to defy certainty, marking those crossroads where we choose potential meaning over comfortable insignificance.</p>
+            <h3>How It Works</h3>
+            <p> This site invites you to explore the emotional weight of your values through interactive scenarios. Each situation places you at a decision point—would you pursue love over security, growth over comfort, purpose over money?</p>
+            <p> Drag and drop the values that matter most to you onto either side of the scale. As you weigh what you’d sacrifice versus what you might gain, the scale will tip and reveal an outcome based on your choices.</p>
+            <p> There are 10 scenarios in total. Each is designed to reflect real-life tradeoffs between values, helping you better understand your personal decision-making compass.</p>
+            <h4>Made by Mi'Lah Clark</h4>
+        </div>
+    </div>
+
+    <div class="intro-screen" id="introScreen">
+        <div class="intro-text-center" id="introTextCenter">WHAT DOES IT MEAN TO</div>
+        <div class="intro-text-top" id="introTextTop"></div>
+        <div class="intro-text-bottom" id="introTextBottom"></div>
+        <button id="skipIntro" class="skip-button">SKIP</button>
+    </div>
+    
+    <div class="container" id="mainContainer">
+        <div class="texture"></div>
+        
+        <div class="text-overlay">
+            <div class="top-tagline" id="topTagline">MAKE THE CHOICE TO DEFY CERTAINTY</div>
+            
+            <div class="script-text" id="scriptText">
+                <span class="for">For</span>
+                <span class="what">what</span>
+                <span class="its">it's</span>
+                <span class="w">W</span>
+                <span class="orth">orth</span>
+            </div>
+            
+            <div class="bottom-tagline" id="bottomTagline">KNOWING THE OUTCOME ISN'T GUARANTEED</div>
+        </div>
+        
+
+        <div class="weighing-scale-container" id="weighingScaleContainer">
+            <div class="scenario-container">
+                <h2 class="scenario-title" id="scenarioTitle">What's Worth It To You?</h2>
+                <div class="scenario-counter" id="scenarioCounter">Scenario 1</div>
+                <p class="scenario-description" id="scenarioDescription">
+                    Drag values onto the scale to see what matters most in this scenario.
+                </p>
+            </div>
+            
+            <div class="scale-visual">
+                <div class="scale-beam" id="scaleBeam">
+                    <div class="scale-pivot"></div>
+                    <div class="scale-left-pan" id="scaleLeftPan">
+                        <div class="pan-label">SACRIFICE</div>
+                        <div class="pan-values" id="leftPanValues"></div>
+                    </div>
+                    <div class="scale-right-pan" id="scaleRightPan">
+                        <div class="pan-label">GAIN</div>
+                        <div class="pan-values" id="rightPanValues"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="weighing-instructions">Drag values to determine if the scenario is worth it</div>
+
+            <div class="values-palette" id="valuesPalette">
+
+            </div>
+
+            
+            <div class="result-container" id="resultContainer">
+                <div class="result-text" id="resultText"></div>
+                <div class="result-image-container" id="resultImageContainer"></div>
+                <div class="scenario-nav-buttons">
+                    <button class="prev-scenario-btn" id="prevScenarioBtn">PREVIOUS SCENARIO</button>
+                    <button class="next-scenario-btn" id="nextScenarioBtn">NEXT SCENARIO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
