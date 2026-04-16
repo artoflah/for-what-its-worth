@@ -9,11 +9,13 @@
 </head>
 <body>
 
-    <!-- fixed persistent UI, visible throughout scroll -->
-    <div id="corner-logo">
-        <img src="assets/background2.png" alt="">
-    </div>
+    <!-- scrolling background layer, behind everything -->
+    <div id="page-bg"></div>
 
+    <!-- logo: full-screen on load, shrinks to corner on scroll -->
+    <img id="hero-logo" src="assets/logoforwhat.png" alt="">
+
+    <!-- fixed persistent ABOUT button -->
     <button class="about-btn-fixed" id="aboutToggle">ABOUT</button>
 
     <!-- floating modal -->
@@ -34,8 +36,6 @@
     </div>
 
     <section id="hero">
-        <div class="hero-overlay"></div>
-        <div class="hero-logo">FWIW</div>
         <div class="hero-arrow">↓</div>
     </section>
 

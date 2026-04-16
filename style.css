@@ -41,26 +41,42 @@ html, body {
     background-color: var(--bg);
     color: var(--off-white);
     font-family: 'Inter Tight', sans-serif;
+    position: relative;
 }
 
-/* Fixed persistent chrome */
-#corner-logo {
-    position: fixed;
-    top: 18px;
-    left: 20px;
-    z-index: 15;
-    opacity: 0;
-    transition: opacity 0.6s ease;
+/* Single scrolling background layer */
+#page-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background-image: url('assets/background.jpg');
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
     pointer-events: none;
 }
 
-#corner-logo img {
-    width: 120px;
-    height: auto;
-    object-fit: contain;
-    opacity: 0.18;
+/* Logo — full-screen on load, shrinks to corner on scroll */
+#hero-logo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center;
+    mix-blend-mode: plus-lighter;
+    pointer-events: none;
+    transform-origin: top left;
     display: block;
+    z-index: 20;
+    opacity: 0;
 }
+
 
 .about-btn-fixed {
     position: fixed;
@@ -90,29 +106,10 @@ html, body {
     position: relative;
     height: 100vh;
     overflow: hidden;
-    background-image: url('assets/background.png');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    transition: opacity 0.8s ease;
+    background: transparent;
+    z-index: 10;
 }
 
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.hero-logo {
-    position: absolute;
-    top: 20px;
-    left: 24px;
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(245, 240, 232, 0.4);
-}
 
 
 .hero-arrow {
@@ -234,8 +231,9 @@ html, body {
     justify-content: center;
     align-items: center;
     padding: 0 12vw;
-    background: var(--bg);
+    background: transparent;
     position: relative;
+    z-index: 10;
 }
 
 .reveal-line {
@@ -270,8 +268,9 @@ html, body {
 .scenario-section {
     min-height: 100vh;
     position: relative;
-    background: var(--bg);
+    background: transparent;
     overflow: hidden;
+    z-index: 10;
 }
 
 .sg-grid {
@@ -303,17 +302,6 @@ html, body {
     z-index: 1;
 }
 
-.sg-logo {
-    position: absolute;
-    top: 18px;
-    left: 20px;
-    z-index: 20;
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(245,240,232,0.2);
-}
 
 
 .img-fragment {
@@ -493,7 +481,9 @@ html, body {
     flex-direction: column;
     align-items: center;
     padding: 80px 40px 100px;
-    background-color: var(--bg);
+    background: transparent;
+    position: relative;
+    z-index: 10;
 }
 
 .scenario-container {
@@ -761,9 +751,11 @@ html, body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: var(--bg);
+    background: transparent;
     text-align: center;
     padding: 0 10vw;
+    position: relative;
+    z-index: 10;
 }
 
 .closing-rule {

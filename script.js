@@ -759,18 +759,48 @@ document.addEventListener('DOMContentLoaded', () => {
     buildScenarioSections();
     loadScenario(0);
 
-    // Hero fade + corner logo on scroll
-    const heroEl     = document.getElementById('hero');
-    const cornerLogo = document.getElementById('corner-logo');
+    // Logo scroll animation — full screen on load, shrinks to corner
+    const heroLogo = document.getElementById('hero-logo');
+
+    // Fade in on load
+    requestAnimationFrame(() => {
+        heroLogo.style.transition = 'opacity 1.2s ease';
+        heroLogo.style.opacity    = '1';
+    });
+
+    let ticking = false;
 
     window.addEventListener('scroll', () => {
-        const threshold = heroEl.offsetHeight - 100;
-        if (window.scrollY > threshold) {
-            cornerLogo.style.opacity = '1';
-            heroEl.style.opacity     = '0';
-        } else {
-            cornerLogo.style.opacity = '0';
-            heroEl.style.opacity     = '1';
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const progress = Math.min(window.scrollY / window.innerHeight, 1);
+
+                if (progress < 1) {
+                    const currentW       = window.innerWidth - (progress * (window.innerWidth - 140));
+                    const currentTop     = progress * 18;
+                    const currentLeft    = progress * 20;
+                    const currentOpacity = 1 - (progress * 0.15);
+
+                    heroLogo.style.transition   = 'none';
+                    heroLogo.style.width        = currentW + 'px';
+                    heroLogo.style.height       = progress < 0.05 ? '100vh' : 'auto';
+                    heroLogo.style.objectFit    = progress < 0.05 ? 'cover' : 'contain';
+                    heroLogo.style.top          = currentTop + 'px';
+                    heroLogo.style.left         = currentLeft + 'px';
+                    heroLogo.style.opacity      = currentOpacity;
+                } else {
+                    heroLogo.style.transition   = 'none';
+                    heroLogo.style.width        = '140px';
+                    heroLogo.style.height       = 'auto';
+                    heroLogo.style.objectFit    = 'contain';
+                    heroLogo.style.top          = '18px';
+                    heroLogo.style.left         = '20px';
+                    heroLogo.style.opacity      = '0.85';
+                }
+
+                ticking = false;
+            });
+            ticking = true;
         }
     }, { passive: true });
 
