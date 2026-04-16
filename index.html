@@ -47,6 +47,7 @@
         <div class="reveal-line">it's recognizing that sometimes value isn't measured in guaranteed outcomes — but in the willingness to risk something precious.</div>
         <div class="reveal-line">it's knowing nothing is for certain. but still making the choice to defy certainty.</div>
         <div class="definition-label">10 scenarios ↓</div>
+        <button id="jump-to-scenarios">begin ↓</button>
     </section>
 
     <main class="scale-section">
@@ -58,17 +59,15 @@
             </p>
         </div>
 
-        <div class="scale-visual">
-            <div class="scale-beam" id="scaleBeam">
-                <div class="scale-pivot"></div>
-                <div class="scale-left-pan" id="scaleLeftPan">
-                    <div class="pan-label">SACRIFICE</div>
-                    <div class="pan-values" id="leftPanValues"></div>
-                </div>
-                <div class="scale-right-pan" id="scaleRightPan">
-                    <div class="pan-label">GAIN</div>
-                    <div class="pan-values" id="rightPanValues"></div>
-                </div>
+        <div class="scale-pans-simple" id="scale-wrapper-0">
+            <div class="scale-pan-box sacrifice-box" id="scaleLeftPan">
+                <div class="pan-label">SACRIFICE</div>
+                <div class="pan-values" id="leftPanValues"></div>
+            </div>
+            <div class="scale-vs-text">vs</div>
+            <div class="scale-pan-box gain-box" id="scaleRightPan">
+                <div class="pan-label">GAIN</div>
+                <div class="pan-values" id="rightPanValues"></div>
             </div>
         </div>
 

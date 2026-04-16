@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const aboutModal     = document.getElementById('aboutModal');
     const aboutClose     = document.querySelector('.about-close');
 
-    const scaleBeam          = document.getElementById('scaleBeam');
     const leftPanValues      = document.getElementById('leftPanValues');
     const rightPanValues     = document.getElementById('rightPanValues');
     const valuesPalette      = document.getElementById('valuesPalette');
@@ -200,6 +199,17 @@ document.addEventListener('DOMContentLoaded', () => {
         rightPanValues.innerHTML = '';
         updateScaleBalance();
 
+        // Update wrapper ID and reset tilt for new scenario
+        const wrapper = document.querySelector('.scale-pans-simple');
+        if (wrapper) {
+            wrapper.id = `scale-wrapper-${index}`;
+            wrapper.style.transform = 'rotate(0deg)';
+            const lb = wrapper.querySelector('.sacrifice-box');
+            const rb = wrapper.querySelector('.gain-box');
+            if (lb) lb.style.transform = '';
+            if (rb) rb.style.transform = '';
+        }
+
         resultContainer.classList.remove('visible');
         prevScenarioBtn.disabled = index === 0;
         createValuePalette();
@@ -245,6 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         draggedElement.remove();
         updateScaleBalance();
+        updateTilt(currentScenarioIndex);
         checkForResult();
     }
 
@@ -261,13 +272,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateScaleBalance() {
-        const totalWeight = leftPanWeight + rightPanWeight;
-        if (totalWeight === 0) {
-            scaleBeam.style.transform = 'translateX(-50%) rotate(0deg)';
-            return;
-        }
-        const angle = ((rightPanWeight - leftPanWeight) / totalWeight) * 15;
-        scaleBeam.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+        // Visual beam removed — weights still tracked for result logic
+    }
+
+    function updateTilt(scenarioIndex) {
+        const leftCount  = leftPanValues.children.length;
+        const rightCount = rightPanValues.children.length;
+        const diff       = rightCount - leftCount;
+        const maxAngle   = 15;
+        const angle      = Math.max(-maxAngle, Math.min(maxAngle, diff * 3));
+
+        const wrapper = document.getElementById(`scale-wrapper-${scenarioIndex}`);
+        if (!wrapper) return;
+        wrapper.style.transform = `rotate(${angle}deg)`;
+
+        const leftBox  = wrapper.querySelector('.sacrifice-box');
+        const rightBox = wrapper.querySelector('.gain-box');
+        if (leftBox)  leftBox.style.transform  = `rotate(${-angle * 0.5}deg)`;
+        if (rightBox) rightBox.style.transform = `rotate(${-angle * 0.5}deg)`;
     }
 
     function checkForResult() {
@@ -300,12 +322,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // and new .sg-chip chips (scenario sections).
 
     function startDrag(e) {
-        if (e.type === 'touchstart') e.preventDefault();
+        e.preventDefault();
 
         // Don't drag chips that have already been placed in a pan
         if (this.closest('.sg-pan') || this.closest('.pan-values')) return;
 
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow          = 'hidden';
+        document.body.style.userSelect        = 'none';
+        document.body.style.webkitUserSelect  = 'none';
 
         isDragging     = true;
         draggedElement = this;
@@ -387,7 +411,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopDrag(e) {
         if (!isDragging) return;
 
-        document.body.style.overflow = '';
+        document.body.style.overflow         = '';
+        document.body.style.userSelect       = '';
+        document.body.style.webkitUserSelect = '';
 
         const x = e.clientX ?? (e.changedTouches && e.changedTouches[0].clientX);
         const y = e.clientY ?? (e.changedTouches && e.changedTouches[0].clientY);
@@ -472,8 +498,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (total >= 3) setTimeout(() => showSectionResult(sectionEl), 800);
     }
 
+    function unlockNext(n, currentSectionEl) {
+        const next = document.getElementById(`scenario-${n + 1}`);
+        if (next) {
+            setTimeout(() => {
+                next.style.opacity      = '1';
+                next.style.pointerEvents = 'all';
+                // Fade out current result bar before scrolling
+                const bar = currentSectionEl.querySelector('.sg-result-bar');
+                if (bar) bar.style.opacity = '0';
+                setTimeout(() => {
+                    next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 300);
+            }, 1500);
+        }
+    }
+
     function showSectionResult(sectionEl) {
-        if (sectionEl.querySelector('.sg-result')) return;
+        if (sectionEl.querySelector('.sg-result-bar')) return;
 
         const idx      = parseInt(sectionEl.id.split('-')[1]) - 1;
         const n        = idx + 1;
@@ -483,6 +525,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let resultKey = 'balanced';
         if (w.left  > w.right + 2)  resultKey = 'notWorth';
         else if (w.right > w.left + 2) resultKey = 'worth';
+
+        const verdictMap = { worth: 'worth it.', notWorth: 'not worth it.', balanced: 'balanced.' };
 
         // 1. Fade out image fragments
         sectionEl.querySelectorAll('.img-fragment').forEach(frag => {
@@ -497,46 +541,59 @@ document.addEventListener('DOMContentLoaded', () => {
             'position:absolute;inset:0;z-index:6;opacity:0;transition:opacity 0.8s ease;';
 
         const bgImg = document.createElement('img');
-        bgImg.src             = `assets/s${n}_${resultKey}.png`;
-        bgImg.alt             = '';
-        bgImg.style.cssText   =
-            'width:100%;height:100%;object-fit:cover;object-position:center;display:block;';
+        bgImg.src           = `assets/s${n}_${resultKey}.png`;
+        bgImg.alt           = '';
+        bgImg.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center;display:block;';
         bgImg.onerror = () => { resultBg.style.background = '#0d0d0d'; };
         resultBg.appendChild(bgImg);
 
-        // 3. Dark overlay inside the result bg
+        // 3. Dark overlay so text stays readable
         const overlay = document.createElement('div');
-        overlay.style.cssText =
-            'position:absolute;inset:0;z-index:7;background:rgba(13,13,13,0.6);';
+        overlay.style.cssText = 'position:absolute;inset:0;z-index:7;background:rgba(13,13,13,0.55);';
         resultBg.appendChild(overlay);
 
         sectionEl.appendChild(resultBg);
 
-        // Trigger transition after browser registers initial opacity: 0
         requestAnimationFrame(() => requestAnimationFrame(() => {
             resultBg.style.opacity = '1';
         }));
 
-        // 5. Result text in center block (z-index 10, above everything)
-        const resultEl = document.createElement('div');
-        resultEl.className   = 'sg-result';
-        resultEl.textContent = scenario.result[resultKey];
-        sectionEl.querySelector('.sg-center').appendChild(resultEl);
-        requestAnimationFrame(() => resultEl.classList.add('visible'));
+        // 4. Result bar — bottom center, above everything
+        const resultBar = document.createElement('div');
+        resultBar.className = 'sg-result-bar';
+        resultBar.style.cssText =
+            'position:absolute;bottom:60px;left:50%;transform:translateX(-50%);' +
+            'width:auto;max-width:600px;text-align:center;z-index:20;' +
+            'opacity:0;transition:opacity 0.8s ease;';
+
+        const verdictEl = document.createElement('div');
+        verdictEl.className   = 'sg-result-verdict';
+        verdictEl.textContent = verdictMap[resultKey];
+
+        const descEl = document.createElement('div');
+        descEl.className   = 'sg-result-desc';
+        descEl.textContent = scenario.result[resultKey];
+
+        resultBar.appendChild(verdictEl);
+        resultBar.appendChild(descEl);
+        sectionEl.appendChild(resultBar);
+
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            resultBar.style.opacity = '1';
+        }));
+
+        // 5. Unlock next scenario after delay
+        unlockNext(n, sectionEl);
 
         // 6. Reset when section scrolls out of view
         const resetObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) {
-                    // Fade fragments back in
                     sectionEl.querySelectorAll('.img-fragment').forEach(frag => {
                         frag.style.opacity = '1';
                     });
-                    // Remove result background and result text
                     resultBg.remove();
-                    const sgResult = sectionEl.querySelector('.sg-result');
-                    if (sgResult) sgResult.remove();
-
+                    resultBar.remove();
                     resetObserver.disconnect();
                 }
             });
@@ -757,18 +814,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Init ────────────────────────────────────────────────────────────────────
 
     buildScenarioSections();
+
+    // Unlock only scenario-1 on load; 2-10 remain hidden
+    const firstSection = document.getElementById('scenario-1');
+    if (firstSection) {
+        firstSection.style.opacity      = '1';
+        firstSection.style.pointerEvents = 'all';
+    }
+
+    // Jump to scenarios button
+    document.getElementById('jump-to-scenarios').addEventListener('click', () => {
+        document.getElementById('scenario-1').scrollIntoView({ behavior: 'smooth' });
+    });
+
     loadScenario(0);
 
     // Logo scroll animation — full screen on load, shrinks to corner
     const heroLogo = document.getElementById('hero-logo');
 
-    console.log('hero-logo src:', heroLogo.src);
-
-    // Fade in on load — hero state: oversized bleed, multiply blend
-    requestAnimationFrame(() => {
-        heroLogo.style.transition = 'opacity 1.2s ease';
+    // Fade in on load with 300ms delay, then clear transition so scroll takes over
+    setTimeout(() => {
+        heroLogo.style.transition = 'opacity 2s ease';
         heroLogo.style.opacity    = '1';
-    });
+    }, 300);
+    setTimeout(() => {
+        heroLogo.style.transition = '';
+    }, 2400);
 
     let ticking = false;
 
@@ -776,13 +847,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!ticking) {
             requestAnimationFrame(() => {
                 const progress = Math.min(window.scrollY / window.innerHeight, 1);
-
-                // Toggle blend mode class at midpoint
-                if (progress > 0.5) {
-                    heroLogo.classList.add('logo-dark-mode');
-                } else {
-                    heroLogo.classList.remove('logo-dark-mode');
-                }
 
                 if (progress < 1) {
                     // Interpolate from oversized bleed to corner size
@@ -822,16 +886,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, { passive: true });
 
-    const revealLines = document.querySelectorAll('.reveal-line');
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const index = Array.from(revealLines).indexOf(entry.target);
-                setTimeout(() => entry.target.classList.add('visible'), index * 200);
-                revealObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.3 });
-
-    revealLines.forEach(line => revealObserver.observe(line));
+    document.querySelectorAll('.reveal-line').forEach((line) => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity   = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        observer.observe(line);
+    });
 });
