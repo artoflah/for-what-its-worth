@@ -764,11 +764,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('hero-logo src:', heroLogo.src);
 
-    // Fade in on load
+    // Fade in on load — hero state: oversized bleed, multiply blend
     requestAnimationFrame(() => {
         heroLogo.style.transition = 'opacity 1.2s ease';
         heroLogo.style.opacity    = '1';
-        heroLogo.style.filter     = 'invert(0)';
     });
 
     let ticking = false;
@@ -778,29 +777,43 @@ document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(() => {
                 const progress = Math.min(window.scrollY / window.innerHeight, 1);
 
+                // Toggle blend mode class at midpoint
+                if (progress > 0.5) {
+                    heroLogo.classList.add('logo-dark-mode');
+                } else {
+                    heroLogo.classList.remove('logo-dark-mode');
+                }
+
                 if (progress < 1) {
-                    const currentW       = window.innerWidth - (progress * (window.innerWidth - 140));
-                    const currentTop     = progress * 18;
-                    const currentLeft    = progress * 20;
+                    // Interpolate from oversized bleed to corner size
+                    const bleedW   = window.innerWidth  * 1.1;
+                    const bleedH   = window.innerHeight * 1.1;
+                    const cornerW  = 160;
+                    const currentW = bleedW  - (progress * (bleedW  - cornerW));
+                    const currentH = bleedH  - (progress * (bleedH  - 0));   // height auto handled by contain
+
+                    const startTop  = window.innerHeight * -0.05;
+                    const startLeft = window.innerWidth  * -0.05;
+                    const currentTop  = startTop  + (progress * (16 - startTop));
+                    const currentLeft = startLeft + (progress * (18 - startLeft));
+
                     const currentOpacity = 1 - (progress * 0.15);
 
                     heroLogo.style.transition   = 'none';
                     heroLogo.style.width        = currentW + 'px';
-                    heroLogo.style.height       = progress < 0.05 ? '100vh' : 'auto';
+                    heroLogo.style.height       = progress < 0.05 ? '110vh' : 'auto';
                     heroLogo.style.objectFit    = progress < 0.05 ? 'cover' : 'contain';
                     heroLogo.style.top          = currentTop + 'px';
                     heroLogo.style.left         = currentLeft + 'px';
                     heroLogo.style.opacity      = currentOpacity;
-                    heroLogo.style.filter       = `invert(${progress})`;
                 } else {
                     heroLogo.style.transition   = 'none';
-                    heroLogo.style.width        = '140px';
+                    heroLogo.style.width        = '160px';
                     heroLogo.style.height       = 'auto';
                     heroLogo.style.objectFit    = 'contain';
-                    heroLogo.style.top          = '18px';
-                    heroLogo.style.left         = '20px';
+                    heroLogo.style.top          = '16px';
+                    heroLogo.style.left         = '18px';
                     heroLogo.style.opacity      = '0.85';
-                    heroLogo.style.filter       = 'invert(1)';
                 }
 
                 ticking = false;
