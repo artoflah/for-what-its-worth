@@ -52,12 +52,16 @@ html, body {
     width: 100%;
     height: 100%;
     z-index: 0;
-    background-image: url('assets/background.jpg');
-    background-size: cover;
-    background-position: top center;
-    background-repeat: no-repeat;
-    background-attachment: scroll;
+    overflow: hidden;
     pointer-events: none;
+}
+
+#bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
 }
 
 /* Logo — full-screen on load, shrinks to corner on scroll */
@@ -69,7 +73,7 @@ html, body {
     height: 100vh;
     object-fit: cover;
     object-position: center;
-    mix-blend-mode: plus-lighter;
+    mix-blend-mode: normal;
     pointer-events: none;
     transform-origin: top left;
     display: block;

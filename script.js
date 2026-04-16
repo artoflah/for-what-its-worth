@@ -762,10 +762,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Logo scroll animation — full screen on load, shrinks to corner
     const heroLogo = document.getElementById('hero-logo');
 
+    console.log('hero-logo src:', heroLogo.src);
+
     // Fade in on load
     requestAnimationFrame(() => {
         heroLogo.style.transition = 'opacity 1.2s ease';
         heroLogo.style.opacity    = '1';
+        heroLogo.style.filter     = 'invert(0)';
     });
 
     let ticking = false;
@@ -788,6 +791,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     heroLogo.style.top          = currentTop + 'px';
                     heroLogo.style.left         = currentLeft + 'px';
                     heroLogo.style.opacity      = currentOpacity;
+                    heroLogo.style.filter       = `invert(${progress})`;
                 } else {
                     heroLogo.style.transition   = 'none';
                     heroLogo.style.width        = '140px';
@@ -796,6 +800,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     heroLogo.style.top          = '18px';
                     heroLogo.style.left         = '20px';
                     heroLogo.style.opacity      = '0.85';
+                    heroLogo.style.filter       = 'invert(1)';
                 }
 
                 ticking = false;
