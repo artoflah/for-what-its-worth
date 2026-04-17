@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeSectionEl = null;
     let activeSacrifPan = null;
     let activeGainPan   = null;
-    const sectionWeights = {};   // { 'scenario-1': { left: 0, right: 0 }, ... }
+    const sectionWeights = {};
 
 
     const scenarios = [
@@ -108,7 +108,62 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
 
-    // ─── About modal ────────────────────────────────────────────────────────────
+    // ─── Smooth lerp scroll ───────────────────────────────────────────────────────
+
+    let currentY    = window.scrollY;
+    let targetY     = window.scrollY;
+    let rafId       = null;
+    let touchStartY = 0;
+    const ease      = 0.06;
+
+    function lerp(start, end, factor) {
+        return start + (end - start) * factor;
+    }
+
+    function smoothScroll() {
+        currentY = lerp(currentY, targetY, ease);
+        if (Math.abs(targetY - currentY) < 0.1) currentY = targetY;
+        window.scrollTo(0, currentY);
+        rafId = requestAnimationFrame(smoothScroll);
+    }
+
+    function onWheel(e) {
+        e.preventDefault();
+        targetY = Math.max(0, Math.min(
+            targetY + e.deltaY * 0.8,
+            document.body.scrollHeight - window.innerHeight
+        ));
+    }
+
+    function onScrollTouchStart(e) {
+        touchStartY = e.touches[0].clientY;
+    }
+
+    function onScrollTouchMove(e) {
+        e.preventDefault();
+        const delta = touchStartY - e.touches[0].clientY;
+        touchStartY = e.touches[0].clientY;
+        targetY = Math.max(0, Math.min(
+            targetY + delta * 1.2,
+            document.body.scrollHeight - window.innerHeight
+        ));
+    }
+
+    function pauseScroll() {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+        window.removeEventListener('wheel',      onWheel);
+        window.removeEventListener('touchmove',  onScrollTouchMove);
+    }
+
+    function resumeScroll() {
+        window.addEventListener('wheel',     onWheel,          { passive: false });
+        window.addEventListener('touchmove', onScrollTouchMove, { passive: false });
+        if (!rafId) smoothScroll();
+    }
+
+
+    // ─── About modal ─────────────────────────────────────────────────────────────
 
     function toggleAbout() {
         aboutModal.classList.toggle('visible');
@@ -120,10 +175,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function startDrag(e) {
         e.preventDefault();
 
-        // Don't drag chips that have already been placed in a pan
         if (this.closest('.sg-pan')) return;
 
-        document.body.style.overflow         = 'hidden';
+        pauseScroll();
         document.body.style.userSelect       = 'none';
         document.body.style.webkitUserSelect = 'none';
 
@@ -185,7 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopDrag(e) {
         if (!isDragging) return;
 
-        document.body.style.overflow         = '';
         document.body.style.userSelect       = '';
         document.body.style.webkitUserSelect = '';
 
@@ -214,10 +267,12 @@ document.addEventListener('DOMContentLoaded', () => {
         activeGainPan   = null;
         isDragging      = false;
         draggedElement  = null;
+
+        resumeScroll();
     }
 
 
-    // ─── Scenario-section drop handlers ─────────────────────────────────────────
+    // ─── Scenario-section drop handlers ──────────────────────────────────────────
 
     function placeOnSectionPan(panEl, side, sectionEl) {
         const chip = document.createElement('div');
@@ -253,16 +308,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (total >= 3) setTimeout(() => showSectionResult(sectionEl), 800);
     }
 
+    function unlockSection(sectionEl) {
+        sectionEl.style.height        = '100vh';
+        sectionEl.style.opacity       = '1';
+        sectionEl.style.pointerEvents = 'all';
+    }
+
     function unlockNext(n, currentSectionEl) {
         const next = document.getElementById(`scenario-${n + 1}`);
         if (next) {
             setTimeout(() => {
-                next.style.opacity       = '1';
-                next.style.pointerEvents = 'all';
+                unlockSection(next);
                 const bar = currentSectionEl.querySelector('.sg-result-bar');
                 if (bar) bar.style.opacity = '0';
                 setTimeout(() => {
-                    next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Use lerp scroll instead of scrollIntoView
+                    targetY = next.offsetTop;
                 }, 300);
             }, 1500);
         }
@@ -301,7 +362,6 @@ document.addEventListener('DOMContentLoaded', () => {
         bgImg.onerror = () => { resultBg.style.background = '#1c1510'; };
         resultBg.appendChild(bgImg);
 
-        // 3. Dark overlay so result text stays readable
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:absolute;inset:0;z-index:7;background:rgba(13,13,13,0.55);';
         resultBg.appendChild(overlay);
@@ -312,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resultBg.style.opacity = '1';
         }));
 
-        // 4. Result bar — bottom center, above everything
+        // 3. Result bar — bottom center
         const resultBar = document.createElement('div');
         resultBar.className = 'sg-result-bar';
         resultBar.style.cssText =
@@ -336,10 +396,10 @@ document.addEventListener('DOMContentLoaded', () => {
             resultBar.style.opacity = '1';
         }));
 
-        // 5. Unlock next scenario after delay
+        // 4. Unlock next scenario
         unlockNext(n, sectionEl);
 
-        // 6. Reset when section scrolls out of view
+        // 5. Reset when section scrolls out of view
         const resetObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) {
@@ -357,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // ─── Build scenario sections ─────────────────────────────────────────────────
+    // ─── Build scenario sections ──────────────────────────────────────────────────
 
     function buildScenarioSections() {
         const chipValues = [
@@ -394,12 +454,12 @@ document.addEventListener('DOMContentLoaded', () => {
             section.className = 'scenario-section';
             section.id        = `scenario-${n}`;
 
-            // 1. Grid overlay
+            // Grid overlay
             const grid = document.createElement('div');
             grid.className = 'sg-grid';
             section.appendChild(grid);
 
-            // 2. Hairlines
+            // Hairlines
             [['sg-hairline-h', 'top',  '33%'],
              ['sg-hairline-h', 'top',  '66%'],
              ['sg-hairline-v', 'left', '33%'],
@@ -410,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 section.appendChild(line);
             });
 
-            // 3. Image fragments (4 corners)
+            // Image fragments (4 corners)
             [
                 { suffix: 'tl', w: '20%', aspect: '1/1', top:    '5%', left:  '2%',  rot: '-2.5deg' },
                 { suffix: 'tr', w: '16%', aspect: '1/1', top:    '3%', right: '4%',  rot:  '2deg'   },
@@ -440,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 section.appendChild(frag);
             });
 
-            // 4. Scattered italic quotes
+            // Scattered italic quotes
             const words = scenario.description.split(' ');
             [
                 { text: words.slice(0, 8).join(' '),  top: '52%', left:  '2%'  },
@@ -456,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 section.appendChild(q);
             });
 
-            // 5. Center block
+            // Center block
             const center = document.createElement('div');
             center.className = 'sg-center';
 
@@ -507,7 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
             center.appendChild(pans);
             section.appendChild(center);
 
-            // 6. Value chips
+            // Value chips
             chipValues.forEach((val, vi) => {
                 const chip = document.createElement('div');
                 chip.className = 'sg-chip';
@@ -522,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 section.appendChild(chip);
             });
 
-            // 7. Bottom labels
+            // Bottom labels
             const lblLeft = document.createElement('div');
             lblLeft.className   = 'sg-bottom-label sg-bottom-left';
             lblLeft.textContent = 'drag values to weigh';
@@ -552,27 +612,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('touchmove', onMouseMove, { passive: false });
     document.addEventListener('touchend',  stopDrag);
 
+    window.addEventListener('touchstart', onScrollTouchStart, { passive: true });
+
 
     // ─── Init ────────────────────────────────────────────────────────────────────
 
     buildScenarioSections();
 
-    // Unlock only scenario-1 on load; 2-10 remain hidden
+    // Unlock scenario-1 on load; 2–10 remain collapsed (height: 0)
     const firstSection = document.getElementById('scenario-1');
-    if (firstSection) {
-        firstSection.style.opacity       = '1';
-        firstSection.style.pointerEvents = 'all';
-    }
+    if (firstSection) unlockSection(firstSection);
 
-    // Jump to scenarios button
+    // Jump button uses lerp scroll
     document.getElementById('jump-to-scenarios').addEventListener('click', () => {
-        document.getElementById('scenario-1').scrollIntoView({ behavior: 'smooth' });
+        const s1 = document.getElementById('scenario-1');
+        if (s1) targetY = s1.offsetTop;
     });
 
     // Logo scroll animation — full screen on load, shrinks to corner
     const heroLogo = document.getElementById('hero-logo');
 
-    // Fade in on load with 300ms delay, then clear transition so scroll takes over
     setTimeout(() => {
         heroLogo.style.transition = 'opacity 2s ease';
         heroLogo.style.opacity    = '1';
@@ -581,46 +640,35 @@ document.addEventListener('DOMContentLoaded', () => {
         heroLogo.style.transition = '';
     }, 2400);
 
-    let ticking = false;
-
     window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                const progress = Math.min(window.scrollY / window.innerHeight, 1);
+        const progress = Math.min(window.scrollY / window.innerHeight, 1);
 
-                if (progress < 1) {
-                    const bleedW   = window.innerWidth  * 1.1;
-                    const bleedH   = window.innerHeight * 1.1;
-                    const cornerW  = 160;
-                    const currentW = bleedW - (progress * (bleedW - cornerW));
+        if (progress < 1) {
+            const bleedW   = window.innerWidth  * 1.1;
+            const bleedH   = window.innerHeight * 1.1;
+            const cornerW  = 160;
+            const currentW = bleedW - (progress * (bleedW - cornerW));
 
-                    const startTop  = window.innerHeight * -0.05;
-                    const startLeft = window.innerWidth  * -0.05;
-                    const currentTop  = startTop  + (progress * (16 - startTop));
-                    const currentLeft = startLeft + (progress * (18 - startLeft));
+            const startTop  = window.innerHeight * -0.05;
+            const startLeft = window.innerWidth  * -0.05;
+            const currentTop  = startTop  + (progress * (16 - startTop));
+            const currentLeft = startLeft + (progress * (18 - startLeft));
 
-                    const currentOpacity = 1 - (progress * 0.15);
-
-                    heroLogo.style.transition = 'none';
-                    heroLogo.style.width      = currentW + 'px';
-                    heroLogo.style.height     = progress < 0.05 ? '110vh' : 'auto';
-                    heroLogo.style.objectFit  = progress < 0.05 ? 'cover' : 'contain';
-                    heroLogo.style.top        = currentTop + 'px';
-                    heroLogo.style.left       = currentLeft + 'px';
-                    heroLogo.style.opacity    = currentOpacity;
-                } else {
-                    heroLogo.style.transition = 'none';
-                    heroLogo.style.width      = '160px';
-                    heroLogo.style.height     = 'auto';
-                    heroLogo.style.objectFit  = 'contain';
-                    heroLogo.style.top        = '16px';
-                    heroLogo.style.left       = '18px';
-                    heroLogo.style.opacity    = '0.85';
-                }
-
-                ticking = false;
-            });
-            ticking = true;
+            heroLogo.style.transition = 'none';
+            heroLogo.style.width      = currentW + 'px';
+            heroLogo.style.height     = progress < 0.05 ? '110vh' : 'auto';
+            heroLogo.style.objectFit  = progress < 0.05 ? 'cover' : 'contain';
+            heroLogo.style.top        = currentTop + 'px';
+            heroLogo.style.left       = currentLeft + 'px';
+            heroLogo.style.opacity    = String(1 - progress * 0.15);
+        } else {
+            heroLogo.style.transition = 'none';
+            heroLogo.style.width      = '160px';
+            heroLogo.style.height     = 'auto';
+            heroLogo.style.objectFit  = 'contain';
+            heroLogo.style.top        = '16px';
+            heroLogo.style.left       = '18px';
+            heroLogo.style.opacity    = '0.85';
         }
     }, { passive: true });
 
@@ -636,4 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { threshold: 0.5 });
         observer.observe(line);
     });
+
+    // Start lerp scroll loop
+    resumeScroll();
 });
