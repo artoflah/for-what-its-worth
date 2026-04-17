@@ -1,27 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const aboutToggle    = document.getElementById('aboutToggle');
-    const aboutModal     = document.getElementById('aboutModal');
-    const aboutClose     = document.querySelector('.about-close');
-
-    const leftPanValues      = document.getElementById('leftPanValues');
-    const rightPanValues     = document.getElementById('rightPanValues');
-    const valuesPalette      = document.getElementById('valuesPalette');
-    const resultContainer    = document.getElementById('resultContainer');
-    const resultText         = document.getElementById('resultText');
-    const resultImageContainer = document.getElementById('resultImageContainer');
-    const nextScenarioBtn    = document.getElementById('nextScenarioBtn');
-    const prevScenarioBtn    = document.getElementById('prevScenarioBtn');
-    const scenarioTitle      = document.getElementById('scenarioTitle');
-    const scenarioDescription = document.getElementById('scenarioDescription');
+    const aboutToggle = document.getElementById('aboutToggle');
+    const aboutModal  = document.getElementById('aboutModal');
+    const aboutClose  = document.querySelector('.about-close');
 
     // Drag state
-    let isDragging      = false;
-    let draggedElement  = null;
-
-    // Old scale-section weights
-    let leftPanWeight  = 0;
-    let rightPanWeight = 0;
-    let currentScenarioIndex = 0;
+    let isDragging     = false;
+    let draggedElement = null;
 
     // Scenario-section drag state
     let activeSectionEl = null;
@@ -38,11 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 worth:    "You embraced the challenge, valuing long-term impact over immediate comfort.",
                 notWorth: "You respected your limits and chose a stable path that supports your present life.",
                 balanced: "You acknowledged the potential and the risks, choosing a mindful compromise."
-            },
-            images: {
-                worth:    "assets/scenario1.a1.png",
-                notWorth: "assets/scenario1,a2.png",
-                balanced: "assets/scenario1,a3.png"
             }
         },
         {
@@ -52,11 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 worth:    "You followed your heart, believing deep connection is worth the leap.",
                 notWorth: "You stayed grounded in your current life, protecting meaningful relationships you've built.",
                 balanced: "You weighed passion with logic, knowing timing matters in love too."
-            },
-            images: {
-                worth:    "assets/scenario2,a1.png",
-                notWorth: "assets/scenario2,a2.png",
-                balanced: "assets/scenario2,a3.png"
             }
         },
         {
@@ -66,11 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 worth:    "You chose meaning over money, ready to live aligned with your deeper purpose.",
                 notWorth: "You prioritized financial security, ensuring stability for yourself and others.",
                 balanced: "You sought a hybrid path—purpose with sustainability in mind."
-            },
-            images: {
-                worth:    "assets/scenario3,a1.png",
-                notWorth: "assets/scenario3,a2.png",
-                balanced: "assets/scenario3,a3.png"
             }
         },
         {
@@ -80,11 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 worth:    "You took the leap to share your vision, despite fear of rejection.",
                 notWorth: "You protected your emotional wellbeing, understanding vulnerability has its seasons.",
                 balanced: "You found a way to share selectively, protecting both expression and peace."
-            },
-            images: {
-                worth:    "assets/scenario4,a1.png",
-                notWorth: "assets/scenario4,a2.png",
-                balanced: "assets/scenario4,a3.png"
             }
         },
         {
@@ -94,11 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 worth:    "You embraced the unknown, craving discovery beyond your comfort zone.",
                 notWorth: "You chose consistency, knowing roots nourish your growth too.",
                 balanced: "You saw both paths clearly and left the door open for future journeys."
-            },
-            images: {
-                worth:    "assets/scenario5,a1.png",
-                notWorth: "assets/scenario5,a2.png",
-                balanced: "assets/scenario5,a3.png"
             }
         },
         {
@@ -108,11 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 worth:    "You risked it all for autonomy, driven by a dream to build something real.",
                 notWorth: "You stayed secure, preserving resources for the right opportunity.",
                 balanced: "You mapped a slower entry—testing the waters before the plunge."
-            },
-            images: {
-                worth:    "assets/scenario6,a1.png",
-                notWorth: "assets/scenario6,a2.png",
-                balanced: "assets/scenario6,a3.png"
             }
         },
         {
@@ -122,11 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 worth:    "You chose healing and clarity over pressure and productivity.",
                 notWorth: "You stayed the course, trusting growth within your current rhythm.",
                 balanced: "You carved a pocket of rest into your journey—without leaving it behind."
-            },
-            images: {
-                worth:    "assets/scenario7,a1.png",
-                notWorth: "assets/scenario7,a2.png",
-                balanced: "assets/scenario7,a3.png"
             }
         },
         {
@@ -136,11 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 worth:    "You spoke your truth, prioritizing justice over personal comfort.",
                 notWorth: "You chose diplomacy and strategy, protecting your influence for later change.",
                 balanced: "You waited, seeking allies to amplify your voice wisely."
-            },
-            images: {
-                worth:    "assets/scenario8,a1.png",
-                notWorth: "assets/scenario8,a2.png",
-                balanced: "assets/scenario8,a3.png"
             }
         },
         {
@@ -150,11 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 worth:    "You gave selflessly, knowing one act of kindness can shift a life.",
                 notWorth: "You conserved your resources, honoring your own limits.",
                 balanced: "You helped in a way that balanced generosity with sustainability."
-            },
-            images: {
-                worth:    "assets/scenario9,a1.png",
-                notWorth: "assets/scenario9,a2.png",
-                balanced: "assets/scenario9,a3.png"
             }
         },
         {
@@ -164,11 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 worth:    "You pursued your dream, believing it's never too late to begin again.",
                 notWorth: "You honored your current responsibilities, recognizing timing is key.",
                 balanced: "You planned thoughtfully—keeping your dream alive while staying grounded."
-            },
-            images: {
-                worth:    "assets/scenario10,a1.png",
-                notWorth: "assets/scenario10,a2.png",
-                balanced: "assets/scenario10,a3.png"
             }
         }
     ];
@@ -181,155 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // ─── Old scale-section logic (unchanged) ────────────────────────────────────
-
-    function loadScenario(index) {
-        if (index >= scenarios.length) {
-            currentScenarioIndex = 0;
-            index = 0;
-        }
-        const scenario = scenarios[index];
-        document.getElementById('scenarioCounter').textContent = `Scenario ${index + 1} of ${scenarios.length}`;
-        scenarioTitle.textContent       = scenario.title;
-        scenarioDescription.textContent = scenario.description;
-
-        leftPanWeight  = 0;
-        rightPanWeight = 0;
-        leftPanValues.innerHTML  = '';
-        rightPanValues.innerHTML = '';
-        updateScaleBalance();
-
-        // Update wrapper ID and reset tilt for new scenario
-        const wrapper = document.querySelector('.scale-pans-simple');
-        if (wrapper) {
-            wrapper.id = `scale-wrapper-${index}`;
-            wrapper.style.transform = 'rotate(0deg)';
-            const lb = wrapper.querySelector('.sacrifice-box');
-            const rb = wrapper.querySelector('.gain-box');
-            if (lb) lb.style.transform = '';
-            if (rb) rb.style.transform = '';
-        }
-
-        resultContainer.classList.remove('visible');
-        prevScenarioBtn.disabled = index === 0;
-        createValuePalette();
-    }
-
-    function createValuePalette() {
-        valuesPalette.innerHTML = '';
-        const values = [
-            { name: 'Love',       weight: 3 },
-            { name: 'Growth',     weight: 3 },
-            { name: 'Security',   weight: 2 },
-            { name: 'Freedom',    weight: 2 },
-            { name: 'Experience', weight: 1 },
-            { name: 'Money',      weight: 3 },
-            { name: 'Connection', weight: 2 },
-            { name: 'Self-Worth', weight: 2 },
-            { name: 'Comfort',    weight: 1 },
-            { name: 'Purpose',    weight: 3 }
-        ];
-        values.forEach(value => {
-            const el = document.createElement('div');
-            el.classList.add('value-draggable');
-            el.textContent = value.name;
-            el.setAttribute('data-weight', value.weight);
-            el.setAttribute('data-value',  value.name);
-            el.addEventListener('mousedown', startDrag);
-            el.addEventListener('touchstart', startDrag, { passive: false });
-            valuesPalette.appendChild(el);
-        });
-    }
-
-    function placeOnPan(panElement, side) {
-        const valueOnPan = document.createElement('div');
-        valueOnPan.classList.add('value-draggable', 'value-on-pan');
-        valueOnPan.textContent = draggedElement.textContent;
-        valueOnPan.setAttribute('data-weight', draggedElement.getAttribute('data-weight'));
-        valueOnPan.setAttribute('data-value',  draggedElement.getAttribute('data-value'));
-        panElement.appendChild(valueOnPan);
-
-        const weight = parseInt(draggedElement.getAttribute('data-weight'));
-        if (side === 'left') leftPanWeight  += weight;
-        else                 rightPanWeight += weight;
-
-        draggedElement.remove();
-        updateScaleBalance();
-        updateTilt(currentScenarioIndex);
-        checkForResult();
-    }
-
-    function returnToPalette() {
-        const newValue = document.createElement('div');
-        newValue.classList.add('value-draggable');
-        newValue.textContent = draggedElement.textContent;
-        newValue.setAttribute('data-weight', draggedElement.getAttribute('data-weight'));
-        newValue.setAttribute('data-value',  draggedElement.getAttribute('data-value'));
-        newValue.addEventListener('mousedown', startDrag);
-        newValue.addEventListener('touchstart', startDrag, { passive: false });
-        valuesPalette.appendChild(newValue);
-        draggedElement.remove();
-    }
-
-    function updateScaleBalance() {
-        // Visual beam removed — weights still tracked for result logic
-    }
-
-    function updateTilt(scenarioIndex) {
-        const leftCount  = leftPanValues.children.length;
-        const rightCount = rightPanValues.children.length;
-        const diff       = rightCount - leftCount;
-        const maxAngle   = 15;
-        const angle      = Math.max(-maxAngle, Math.min(maxAngle, diff * 3));
-
-        const wrapper = document.getElementById(`scale-wrapper-${scenarioIndex}`);
-        if (!wrapper) return;
-        wrapper.style.transform = `rotate(${angle}deg)`;
-
-        const leftBox  = wrapper.querySelector('.sacrifice-box');
-        const rightBox = wrapper.querySelector('.gain-box');
-        if (leftBox)  leftBox.style.transform  = `rotate(${-angle * 0.5}deg)`;
-        if (rightBox) rightBox.style.transform = `rotate(${-angle * 0.5}deg)`;
-    }
-
-    function checkForResult() {
-        if (leftPanValues.children.length + rightPanValues.children.length >= 3) {
-            setTimeout(showResult, 1000);
-        }
-    }
-
-    function showResult() {
-        const scenario = scenarios[currentScenarioIndex];
-        let resultKey = 'balanced';
-        if (leftPanWeight  > rightPanWeight + 2) resultKey = 'notWorth';
-        else if (rightPanWeight > leftPanWeight + 2) resultKey = 'worth';
-
-        resultText.textContent = scenario.result[resultKey];
-
-        resultImageContainer.innerHTML = '';
-        const img = document.createElement('img');
-        img.classList.add('result-image');
-        img.src = scenario.images[resultKey];
-        img.alt = `Result: ${resultKey}`;
-        resultImageContainer.appendChild(img);
-
-        resultContainer.classList.add('visible');
-    }
-
-
-    // ─── Unified drag ────────────────────────────────────────────────────────────
-    // Handles both old .value-draggable chips (old scale section)
-    // and new .sg-chip chips (scenario sections).
+    // ─── Drag ────────────────────────────────────────────────────────────────────
 
     function startDrag(e) {
         e.preventDefault();
 
         // Don't drag chips that have already been placed in a pan
-        if (this.closest('.sg-pan') || this.closest('.pan-values')) return;
+        if (this.closest('.sg-pan')) return;
 
-        document.body.style.overflow          = 'hidden';
-        document.body.style.userSelect        = 'none';
-        document.body.style.webkitUserSelect  = 'none';
+        document.body.style.overflow         = 'hidden';
+        document.body.style.userSelect       = 'none';
+        document.body.style.webkitUserSelect = 'none';
 
         isDragging     = true;
         draggedElement = this;
@@ -343,24 +139,17 @@ document.addEventListener('DOMContentLoaded', () => {
         draggedElement.setAttribute('data-offset-x', clientX - rect.left);
         draggedElement.setAttribute('data-offset-y', clientY - rect.top);
 
-        if (parentSection) {
-            // Scenario chip — use fixed positioning so it escapes the section's
-            // overflow:hidden and absolute coordinate space
-            activeSectionEl = parentSection;
-            const pans      = parentSection.querySelectorAll('.sg-pan');
-            activeSacrifPan = pans[0];
-            activeGainPan   = pans[1];
+        activeSectionEl = parentSection;
+        const pans      = parentSection.querySelectorAll('.sg-pan');
+        activeSacrifPan = pans[0];
+        activeGainPan   = pans[1];
 
-            draggedElement.dataset.origTop   = draggedElement.style.top   || '';
-            draggedElement.dataset.origLeft  = draggedElement.style.left  || '';
-            draggedElement.dataset.origRight = draggedElement.style.right || '';
-            draggedElement.style.position    = 'fixed';
-        } else {
-            // Old palette chip
-            draggedElement.style.position = 'absolute';
-        }
+        draggedElement.dataset.origTop   = draggedElement.style.top   || '';
+        draggedElement.dataset.origLeft  = draggedElement.style.left  || '';
+        draggedElement.dataset.origRight = draggedElement.style.right || '';
+        draggedElement.style.position    = 'fixed';
+        draggedElement.style.zIndex      = '1000';
 
-        draggedElement.style.zIndex = '1000';
         moveAt(clientX, clientY);
         document.body.appendChild(draggedElement);
     }
@@ -382,30 +171,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkDropTarget(x, y) {
-        if (activeSectionEl) {
-            // Scenario mode — highlight active section's pans
-            if (!activeSacrifPan || !activeGainPan) return;
-            activeSacrifPan.style.borderColor = 'rgba(245,240,232,0.15)';
-            activeGainPan.style.borderColor   = 'rgba(245,240,232,0.15)';
-            const sr = activeSacrifPan.getBoundingClientRect();
-            const gr = activeGainPan.getBoundingClientRect();
-            if (x >= sr.left && x <= sr.right && y >= sr.top && y <= sr.bottom)
-                activeSacrifPan.style.borderColor = 'rgba(245,240,232,0.5)';
-            else if (x >= gr.left && x <= gr.right && y >= gr.top && y <= gr.bottom)
-                activeGainPan.style.borderColor   = 'rgba(245,240,232,0.5)';
-        } else {
-            // Old scale mode
-            const lp = document.getElementById('scaleLeftPan');
-            const rp = document.getElementById('scaleRightPan');
-            lp.style.backgroundColor = 'transparent';
-            rp.style.backgroundColor = 'transparent';
-            const lr = lp.getBoundingClientRect();
-            const rr = rp.getBoundingClientRect();
-            if (x >= lr.left && x <= lr.right && y >= lr.top && y <= lr.bottom)
-                lp.style.backgroundColor = 'rgba(255,255,255,0.12)';
-            else if (x >= rr.left && x <= rr.right && y >= rr.top && y <= rr.bottom)
-                rp.style.backgroundColor = 'rgba(255,255,255,0.12)';
-        }
+        if (!activeSacrifPan || !activeGainPan) return;
+        activeSacrifPan.style.borderColor = '';
+        activeGainPan.style.borderColor   = '';
+        const sr = activeSacrifPan.getBoundingClientRect();
+        const gr = activeGainPan.getBoundingClientRect();
+        if (x >= sr.left && x <= sr.right && y >= sr.top && y <= sr.bottom)
+            activeSacrifPan.style.borderColor = 'rgba(28,21,16,0.45)';
+        else if (x >= gr.left && x <= gr.right && y >= gr.top && y <= gr.bottom)
+            activeGainPan.style.borderColor   = 'rgba(28,21,16,0.45)';
     }
 
     function stopDrag(e) {
@@ -420,45 +194,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         draggedElement.classList.remove('dragging');
 
-        if (activeSectionEl) {
-            // Reset pan highlights
-            if (activeSacrifPan) activeSacrifPan.style.borderColor = '';
-            if (activeGainPan)   activeGainPan.style.borderColor   = '';
+        if (activeSacrifPan) activeSacrifPan.style.borderColor = '';
+        if (activeGainPan)   activeGainPan.style.borderColor   = '';
 
-            const sr       = activeSacrifPan.getBoundingClientRect();
-            const gr       = activeGainPan.getBoundingClientRect();
-            const sectionRef = activeSectionEl;
+        const sr         = activeSacrifPan.getBoundingClientRect();
+        const gr         = activeGainPan.getBoundingClientRect();
+        const sectionRef = activeSectionEl;
 
-            if (x >= sr.left && x <= sr.right && y >= sr.top && y <= sr.bottom) {
-                placeOnSectionPan(activeSacrifPan, 'left', sectionRef);
-            } else if (x >= gr.left && x <= gr.right && y >= gr.top && y <= gr.bottom) {
-                placeOnSectionPan(activeGainPan, 'right', sectionRef);
-            } else {
-                returnToSection();
-            }
-
-            activeSectionEl = null;
-            activeSacrifPan = null;
-            activeGainPan   = null;
+        if (x >= sr.left && x <= sr.right && y >= sr.top && y <= sr.bottom) {
+            placeOnSectionPan(activeSacrifPan, 'left', sectionRef);
+        } else if (x >= gr.left && x <= gr.right && y >= gr.top && y <= gr.bottom) {
+            placeOnSectionPan(activeGainPan, 'right', sectionRef);
         } else {
-            // Old scale section
-            const lp = document.getElementById('scaleLeftPan');
-            const rp = document.getElementById('scaleRightPan');
-            lp.style.backgroundColor = 'transparent';
-            rp.style.backgroundColor = 'transparent';
-            const lr = lp.getBoundingClientRect();
-            const rr = rp.getBoundingClientRect();
-
-            if (x >= lr.left && x <= lr.right && y >= lr.top && y <= lr.bottom)
-                placeOnPan(leftPanValues, 'left');
-            else if (x >= rr.left && x <= rr.right && y >= rr.top && y <= rr.bottom)
-                placeOnPan(rightPanValues, 'right');
-            else
-                returnToPalette();
+            returnToSection();
         }
 
-        isDragging     = false;
-        draggedElement = null;
+        activeSectionEl = null;
+        activeSacrifPan = null;
+        activeGainPan   = null;
+        isDragging      = false;
+        draggedElement  = null;
     }
 
 
@@ -502,9 +257,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const next = document.getElementById(`scenario-${n + 1}`);
         if (next) {
             setTimeout(() => {
-                next.style.opacity      = '1';
+                next.style.opacity       = '1';
                 next.style.pointerEvents = 'all';
-                // Fade out current result bar before scrolling
                 const bar = currentSectionEl.querySelector('.sg-result-bar');
                 if (bar) bar.style.opacity = '0';
                 setTimeout(() => {
@@ -544,10 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
         bgImg.src           = `assets/s${n}_${resultKey}.png`;
         bgImg.alt           = '';
         bgImg.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center;display:block;';
-        bgImg.onerror = () => { resultBg.style.background = '#0d0d0d'; };
+        bgImg.onerror = () => { resultBg.style.background = '#1c1510'; };
         resultBg.appendChild(bgImg);
 
-        // 3. Dark overlay so text stays readable
+        // 3. Dark overlay so result text stays readable
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:absolute;inset:0;z-index:7;background:rgba(13,13,13,0.55);';
         resultBg.appendChild(overlay);
@@ -632,10 +386,10 @@ document.addEventListener('DOMContentLoaded', () => {
             { top: '48%', right: '24%' }
         ];
 
-        const anchor = document.querySelector('.scale-section');
+        const anchor = document.getElementById('closing');
 
         scenarios.forEach((scenario, i) => {
-            const n = i + 1;
+            const n       = i + 1;
             const section = document.createElement('section');
             section.className = 'scenario-section';
             section.id        = `scenario-${n}`;
@@ -651,12 +405,12 @@ document.addEventListener('DOMContentLoaded', () => {
              ['sg-hairline-v', 'left', '33%'],
              ['sg-hairline-v', 'left', '66%']].forEach(([cls, prop, val]) => {
                 const line = document.createElement('div');
-                line.className  = cls;
+                line.className   = cls;
                 line.style[prop] = val;
                 section.appendChild(line);
             });
 
-            // 3. Image fragments
+            // 3. Image fragments (4 corners)
             [
                 { suffix: 'tl', w: '20%', aspect: '1/1', top:    '5%', left:  '2%',  rot: '-2.5deg' },
                 { suffix: 'tr', w: '16%', aspect: '1/1', top:    '3%', right: '4%',  rot:  '2deg'   },
@@ -664,8 +418,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 { suffix: 'br', w: '14%', aspect: '1/1', bottom: '4%', right: '3%',  rot: '-1.5deg' }
             ].forEach(({ suffix, w, aspect, top, bottom, left, right, rot }) => {
                 const frag = document.createElement('div');
-                frag.className      = 'img-fragment';
-                frag.style.width    = w;
+                frag.className         = 'img-fragment';
+                frag.style.width       = w;
                 frag.style.aspectRatio = aspect;
                 frag.style.transform   = `rotate(${rot})`;
                 if (top)    frag.style.top    = top;
@@ -678,15 +432,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 img.alt   = '';
                 img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
                 img.onerror = () => {
-                    frag.style.background = '#161616';
-                    frag.style.border     = '0.5px solid rgba(245,240,232,0.08)';
+                    frag.style.background = '#d4cfc4';
+                    frag.style.border     = '0.5px solid rgba(28,21,16,0.1)';
                     img.style.display     = 'none';
                 };
                 frag.appendChild(img);
                 section.appendChild(frag);
             });
 
-            // 6. Scattered italic quotes
+            // 4. Scattered italic quotes
             const words = scenario.description.split(' ');
             [
                 { text: words.slice(0, 8).join(' '),  top: '52%', left:  '2%'  },
@@ -702,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 section.appendChild(q);
             });
 
-            // 7. Center block
+            // 5. Center block
             const center = document.createElement('div');
             center.className = 'sg-center';
 
@@ -753,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
             center.appendChild(pans);
             section.appendChild(center);
 
-            // 8. Value chips with drag listeners
+            // 6. Value chips
             chipValues.forEach((val, vi) => {
                 const chip = document.createElement('div');
                 chip.className = 'sg-chip';
@@ -768,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 section.appendChild(chip);
             });
 
-            // 9. Bottom labels
+            // 7. Bottom labels
             const lblLeft = document.createElement('div');
             lblLeft.className   = 'sg-bottom-label sg-bottom-left';
             lblLeft.textContent = 'drag values to weigh';
@@ -785,18 +539,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ─── Event listeners ─────────────────────────────────────────────────────────
-
-    nextScenarioBtn.addEventListener('click', () => {
-        currentScenarioIndex++;
-        loadScenario(currentScenarioIndex);
-    });
-
-    prevScenarioBtn.addEventListener('click', () => {
-        if (currentScenarioIndex > 0) {
-            currentScenarioIndex--;
-            loadScenario(currentScenarioIndex);
-        }
-    });
 
     aboutToggle.addEventListener('click', toggleAbout);
     aboutClose.addEventListener('click', toggleAbout);
@@ -818,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Unlock only scenario-1 on load; 2-10 remain hidden
     const firstSection = document.getElementById('scenario-1');
     if (firstSection) {
-        firstSection.style.opacity      = '1';
+        firstSection.style.opacity       = '1';
         firstSection.style.pointerEvents = 'all';
     }
 
@@ -826,8 +568,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('jump-to-scenarios').addEventListener('click', () => {
         document.getElementById('scenario-1').scrollIntoView({ behavior: 'smooth' });
     });
-
-    loadScenario(0);
 
     // Logo scroll animation — full screen on load, shrinks to corner
     const heroLogo = document.getElementById('hero-logo');
@@ -849,12 +589,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const progress = Math.min(window.scrollY / window.innerHeight, 1);
 
                 if (progress < 1) {
-                    // Interpolate from oversized bleed to corner size
                     const bleedW   = window.innerWidth  * 1.1;
                     const bleedH   = window.innerHeight * 1.1;
                     const cornerW  = 160;
-                    const currentW = bleedW  - (progress * (bleedW  - cornerW));
-                    const currentH = bleedH  - (progress * (bleedH  - 0));   // height auto handled by contain
+                    const currentW = bleedW - (progress * (bleedW - cornerW));
 
                     const startTop  = window.innerHeight * -0.05;
                     const startLeft = window.innerWidth  * -0.05;
@@ -863,21 +601,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const currentOpacity = 1 - (progress * 0.15);
 
-                    heroLogo.style.transition   = 'none';
-                    heroLogo.style.width        = currentW + 'px';
-                    heroLogo.style.height       = progress < 0.05 ? '110vh' : 'auto';
-                    heroLogo.style.objectFit    = progress < 0.05 ? 'cover' : 'contain';
-                    heroLogo.style.top          = currentTop + 'px';
-                    heroLogo.style.left         = currentLeft + 'px';
-                    heroLogo.style.opacity      = currentOpacity;
+                    heroLogo.style.transition = 'none';
+                    heroLogo.style.width      = currentW + 'px';
+                    heroLogo.style.height     = progress < 0.05 ? '110vh' : 'auto';
+                    heroLogo.style.objectFit  = progress < 0.05 ? 'cover' : 'contain';
+                    heroLogo.style.top        = currentTop + 'px';
+                    heroLogo.style.left       = currentLeft + 'px';
+                    heroLogo.style.opacity    = currentOpacity;
                 } else {
-                    heroLogo.style.transition   = 'none';
-                    heroLogo.style.width        = '160px';
-                    heroLogo.style.height       = 'auto';
-                    heroLogo.style.objectFit    = 'contain';
-                    heroLogo.style.top          = '16px';
-                    heroLogo.style.left         = '18px';
-                    heroLogo.style.opacity      = '0.85';
+                    heroLogo.style.transition = 'none';
+                    heroLogo.style.width      = '160px';
+                    heroLogo.style.height     = 'auto';
+                    heroLogo.style.objectFit  = 'contain';
+                    heroLogo.style.top        = '16px';
+                    heroLogo.style.left       = '18px';
+                    heroLogo.style.opacity    = '0.85';
                 }
 
                 ticking = false;

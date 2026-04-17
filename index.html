@@ -9,11 +9,6 @@
 </head>
 <body>
 
-    <!-- scrolling background layer, behind everything -->
-    <div id="page-bg">
-        <img src="assets/background.jpg" id="bg-img" alt="">
-    </div>
-
     <!-- logo: full-screen on load, shrinks to corner on scroll -->
     <img id="hero-logo" src="assets/logoforwhat.png" alt="">
 
@@ -49,41 +44,6 @@
         <div class="definition-label">10 scenarios ↓</div>
         <button id="jump-to-scenarios">begin ↓</button>
     </section>
-
-    <main class="scale-section">
-        <div class="scenario-container">
-            <h2 class="scenario-title" id="scenarioTitle">What's Worth It To You?</h2>
-            <div class="scenario-counter" id="scenarioCounter">Scenario 1 of 10</div>
-            <p class="scenario-description" id="scenarioDescription">
-                Drag values onto the scale to see what matters most in this scenario.
-            </p>
-        </div>
-
-        <div class="scale-pans-simple" id="scale-wrapper-0">
-            <div class="scale-pan-box sacrifice-box" id="scaleLeftPan">
-                <div class="pan-label">SACRIFICE</div>
-                <div class="pan-values" id="leftPanValues"></div>
-            </div>
-            <div class="scale-vs-text">vs</div>
-            <div class="scale-pan-box gain-box" id="scaleRightPan">
-                <div class="pan-label">GAIN</div>
-                <div class="pan-values" id="rightPanValues"></div>
-            </div>
-        </div>
-
-        <div class="weighing-instructions">Drag values to determine if the scenario is worth it</div>
-
-        <div class="values-palette" id="valuesPalette"></div>
-
-        <div class="result-container" id="resultContainer">
-            <div class="result-text" id="resultText"></div>
-            <div class="result-image-container" id="resultImageContainer"></div>
-            <div class="scenario-nav-buttons">
-                <button class="prev-scenario-btn" id="prevScenarioBtn">PREVIOUS SCENARIO</button>
-                <button class="next-scenario-btn" id="nextScenarioBtn">NEXT SCENARIO</button>
-            </div>
-        </div>
-    </main>
 
     <section id="closing">
         <div class="closing-rule"></div>
