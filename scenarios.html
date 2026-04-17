@@ -3,19 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>for what it's worth.</title>
+    <title>for what it's worth — scenarios</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter+Tight:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        html, body {
+            overflow: hidden;
+            height: 100%;
+        }
+
+        #corner-logo {
+            position: fixed;
+            top: 18px;
+            left: 20px;
+            width: 140px;
+            height: auto;
+            mix-blend-mode: multiply;
+            opacity: 0.85;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        #scenario-stage {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #e8e3d8;
+            overflow: hidden;
+            z-index: 10;
+            transition: opacity 0.5s ease;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- logo: full-screen on load, shrinks to corner on scroll -->
-    <img id="hero-logo" src="assets/logoforwhat.png" alt="">
+    <img id="corner-logo" src="assets/logoforwhat.png" alt="">
 
-    <!-- fixed persistent ABOUT button -->
     <button class="about-btn-fixed" id="aboutToggle">ABOUT</button>
 
-    <!-- floating modal -->
     <div class="about-modal" id="aboutModal">
         <div class="about-content">
             <button class="about-close">&times;</button>
@@ -32,19 +58,8 @@
         </div>
     </div>
 
-    <section id="hero">
-        <div class="hero-arrow">↓</div>
-    </section>
+    <div id="scenario-stage"></div>
 
-    <section id="definition">
-        <div class="reveal-line">the moment we decide to not be afraid of our actions & decisions.</div>
-        <div class="reveal-line">for what it's worth is the gap between what we sacrifice and what we might receive.</div>
-        <div class="reveal-line">it's recognizing that sometimes value isn't measured in guaranteed outcomes — but in the willingness to risk something precious.</div>
-        <div class="reveal-line">it's knowing nothing is for certain. but still making the choice to defy certainty.</div>
-        <div class="definition-label">10 scenarios ↓</div>
-        <button id="jump-to-scenarios">begin ↓</button>
-    </section>
-
-    <script src="script.js"></script>
+    <script src="scenarios.js"></script>
 </body>
 </html>
