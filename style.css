@@ -52,13 +52,12 @@ body {
 /* Logo — full-screen on load, shrinks to corner on scroll */
 #hero-logo {
     position: fixed;
-    top: -5vh;
-    left: -5vw;
-    width: 110vw;
-    height: 110vh;
+    top: -8vh;
+    left: -8vw;
+    width: 116vw;
+    height: 116vh;
     object-fit: cover;
     object-position: center;
-    overflow: visible;
     mix-blend-mode: multiply;
     pointer-events: none;
     display: block;
