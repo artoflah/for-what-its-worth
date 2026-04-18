@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         'rgb(255,0,20)',
             '--text-sub':     'rgba(255,0,20,0.5)',
             '--accent':       'rgb(255,0,20)',
-            '--cursor-color': 'rgb(255,0,20)',
+            '--cursor-color': '#0047FF',
             '--tint-opacity': '0.5'
         },
         {
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         'rgb(107,58,56)',
             '--text-sub':     'rgba(107,58,56,0.5)',
             '--accent':       'rgb(107,58,56)',
-            '--cursor-color': 'rgb(107,58,56)',
+            '--cursor-color': '#FFE500',
             '--tint-opacity': '0.5'
         },
         {
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         'rgb(255,246,98)',
             '--text-sub':     'rgba(255,246,98,0.5)',
             '--accent':       'rgb(255,246,98)',
-            '--cursor-color': 'rgb(255,246,98)',
+            '--cursor-color': '#FF3CAC',
             '--tint-opacity': '0.5'
         },
         {
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         'rgb(78,93,97)',
             '--text-sub':     'rgba(78,93,97,0.5)',
             '--accent':       'rgb(78,93,97)',
-            '--cursor-color': 'rgb(78,93,97)',
+            '--cursor-color': '#FF3CAC',
             '--tint-opacity': '0.5'
         },
         {
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         'rgb(255,246,98)',
             '--text-sub':     'rgba(255,246,98,0.5)',
             '--accent':       'rgb(255,246,98)',
-            '--cursor-color': 'rgb(255,246,98)',
+            '--cursor-color': '#ffffff',
             '--tint-opacity': '0.5'
         },
         {
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         '#000000',
             '--text-sub':     'rgba(0,0,0,0.5)',
             '--accent':       '#000000',
-            '--cursor-color': '#000000',
+            '--cursor-color': '#0047FF',
             '--tint-opacity': '0.3'
         },
         {
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         '#ffffff',
             '--text-sub':     'rgba(255,255,255,0.5)',
             '--accent':       '#ffffff',
-            '--cursor-color': '#ffffff',
+            '--cursor-color': '#FFE500',
             '--tint-opacity': '0.5'
         }
     ];
@@ -138,23 +138,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Build text block ─────────────────────────────────────────────────────────
 
     const segments = [
-        { type: 'text', content: "luck is what happens when you stop waiting for "    },
+        { type: 'text', content: "for what it\u2019s worth, luck is just "           },
         { type: 'swap', key: 'certainty'                                               },
-        { type: 'text', content: " and start betting on "                              },
+        { type: 'text', content: " you stopped waiting for. it\u2019s what happens when you bet on " },
         { type: 'swap', key: 'yourself'                                                },
-        { type: 'text', content: ". it\u2019s tossing everything "                    },
+        { type: 'text', content: " and hold onto something "                          },
         { type: 'swap', key: 'precious'                                                },
-        { type: 'text', content: " into the air \u2014 your "                         },
+        { type: 'text', content: " \u2014 your "                                      },
         { type: 'swap', key: 'dreams'                                                  },
         { type: 'text', content: ", your "                                             },
         { type: 'swap', key: 'time'                                                    },
         { type: 'text', content: ", your "                                             },
         { type: 'swap', key: 'heart'                                                   },
-        { type: 'text', content: " \u2014 not knowing how it "                        },
+        { type: 'text', content: ". no one knows how it "                             },
         { type: 'swap', key: 'lands'                                                   },
-        { type: 'text', content: ". for what it\u2019s worth, the "                   },
+        { type: 'text', content: ". that\u2019s the "                                 },
         { type: 'swap', key: 'risk'                                                    },
-        { type: 'text', content: " is always worth the "                               },
+        { type: 'text', content: ". that\u2019s also the "                            },
         { type: 'swap', key: 'reach'                                                   },
         { type: 'text', content: "."                                                   }
     ];
