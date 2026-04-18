@@ -4,47 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>for what it's worth.</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter+Tight:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- logo: full-screen on load, shrinks to corner on scroll -->
-    <img id="hero-logo" src="assets/logoforwhat.png" alt="">
+    <!-- Landing screen -->
+    <div id="landing">
+        <img id="ticket-logo" src="assets/ticket.png" alt="">
+        <p id="hero-sub">what's worth it to you?</p>
+    </div>
 
-    <!-- fixed persistent ABOUT button -->
-    <button class="about-btn-fixed" id="aboutToggle">ABOUT</button>
+    <!-- Main screen -->
+    <div id="main">
 
-    <!-- floating modal -->
-    <div class="about-modal" id="aboutModal">
-        <div class="about-content">
-            <button class="about-close">CLOSE</button>
+        <!-- Background image accumulation layer -->
+        <div id="image-layer"></div>
+
+        <!-- Fixed ticket watermark -->
+        <img id="watermark" src="assets/ticket.png" alt="">
+
+        <!-- Main text block — populated by JS -->
+        <div id="text-block"></div>
+
+        <!-- Bottom bar -->
+        <div id="bottom-bar">
+            <button id="color-btn">( color )</button>
+            <span id="bottom-title">for what it's worth</span>
+            <button id="about-btn">( about )</button>
+        </div>
+
+    </div>
+
+    <!-- About modal — root level so it's above everything -->
+    <div id="about-modal">
+        <div id="about-content">
+            <button id="about-close">close</button>
             <h2>"For What It's Worth."</h2>
-            <p><strong><em>phrase</em></strong><br>The moment we decide to not be afraid of our actions & decisions. When we take a step outside the box from our safety net. The courage we take when the outcome isn't guaranteed. When there isn't a define yes or no, is this good or not.</p>
+            <p><strong><em>phrase</em></strong><br>The moment we decide to not be afraid of our actions &amp; decisions. When we take a step outside the box from our safety net. The courage we take when the outcome isn't guaranteed. When there isn't a define yes or no, is this good or not.</p>
             <p>For what it's worth is like investing all your money into a passion project knowing you have no fall back. Or putting all your love into someone who might not withstand time. Or voicing an opinion when there is no need to.</p>
-            <p>For what it's worth is the gap between what we sacrifice and what we might receive. It's recognizing that sometimes value isn't measured in guaranteed outcomes but in the willingness to risk something precious—our ideas, our vulnerabilities, our hearts—knowing full well they might be dismissed, misunderstood, or broken.</p>
+            <p>For what it's worth is the gap between what we sacrifice and what we might receive. It's recognizing that sometimes value isn't measured in guaranteed outcomes but in the willingness to risk something precious — our ideas, our vulnerabilities, our hearts — knowing full well they might be dismissed, misunderstood, or broken.</p>
             <p>It's knowing nothing is for certain but still making the choice to defy certainty, marking those crossroads where we choose potential meaning over comfortable insignificance.</p>
             <div class="about-divider"></div>
             <h3>How It Works</h3>
-            <p>This site invites you to explore the emotional weight of your values through interactive scenarios. Each situation places you at a decision point—would you pursue love over security, growth over comfort, purpose over money?</p>
-            <p>Drag and drop the values that matter most to you onto either side of the scale. As you weigh what you'd sacrifice versus what you might gain, the scale will tip and reveal an outcome based on your choices.</p>
-            <p>There are 10 scenarios in total. Each is designed to reflect real-life tradeoffs between values, helping you better understand your personal decision-making compass.</p>
+            <p>Click any underlined word in the text to swap it for an alternative. Each click cycles the word to its next meaning and reveals a new image. Explore what changes — and what stays the same.</p>
             <h4>Made by Mi'Lah Clark</h4>
         </div>
     </div>
 
-    <section id="hero">
-        <div class="hero-arrow">↓</div>
-    </section>
-
-    <section id="definition">
-        <div class="reveal-line">the moment we decide to not be afraid of our actions & decisions.</div>
-        <div class="reveal-line">for what it's worth is the gap between what we sacrifice and what we might receive.</div>
-        <div class="reveal-line">it's recognizing that sometimes value isn't measured in guaranteed outcomes — but in the willingness to risk something precious.</div>
-        <div class="reveal-line">it's knowing nothing is for certain. but still making the choice to defy certainty.</div>
-        <div class="definition-label">10 scenarios ↓</div>
-        <button id="jump-to-scenarios">begin ↓</button>
-    </section>
+    <!-- Custom cursor -->
+    <div id="custom-cursor">let's find out</div>
 
     <script src="script.js"></script>
 </body>

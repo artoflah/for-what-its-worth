@@ -1,54 +1,277 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const aboutToggle = document.getElementById('aboutToggle');
-    const aboutModal  = document.getElementById('aboutModal');
-    const aboutClose  = document.querySelector('.about-close');
+
+    // ─── Color schemes ────────────────────────────────────────────────────────────
+
+    const schemes = [
+        {
+            '--bg':            '#ffffff',
+            '--text':          '#1a1a1a',
+            '--text-sub':      'rgba(26,26,26,0.45)',
+            '--accent':        '#1a1a1a',
+            '--swap-underline':'rgba(26,26,26,0.3)',
+            '--modal-bg':      'rgba(255,255,255,0.92)'
+        },
+        {
+            '--bg':            '#f7e9f0',
+            '--text':          '#1a1a1a',
+            '--text-sub':      'rgba(26,26,26,0.45)',
+            '--accent':        '#e8437a',
+            '--swap-underline':'rgba(232,67,122,0.4)',
+            '--modal-bg':      'rgba(247,233,240,0.92)'
+        },
+        {
+            '--bg':            '#fffbe6',
+            '--text':          '#1a2744',
+            '--text-sub':      'rgba(26,39,68,0.45)',
+            '--accent':        '#1a2744',
+            '--swap-underline':'rgba(26,39,68,0.3)',
+            '--modal-bg':      'rgba(255,251,230,0.92)'
+        },
+        {
+            '--bg':            '#e8f4fd',
+            '--text':          '#c84b00',
+            '--text-sub':      'rgba(200,75,0,0.45)',
+            '--accent':        '#c84b00',
+            '--swap-underline':'rgba(200,75,0,0.3)',
+            '--modal-bg':      'rgba(232,244,253,0.92)'
+        },
+        {
+            '--bg':            '#1a1a1a',
+            '--text':          '#f5f0e8',
+            '--text-sub':      'rgba(245,240,232,0.45)',
+            '--accent':        '#f5f0e8',
+            '--swap-underline':'rgba(245,240,232,0.3)',
+            '--modal-bg':      'rgba(26,26,26,0.92)'
+        }
+    ];
+
+    let schemeIndex = 0;
+    const root = document.documentElement;
+
+    function applyScheme(idx) {
+        const s = schemes[idx];
+        for (const [prop, val] of Object.entries(s)) {
+            root.style.setProperty(prop, val);
+        }
+        // Clear images on scheme change — clean slate for new color context
+        clearImageLayer();
+    }
+
+    applyScheme(0);
+
+
+    // ─── Landing → Main transition ───────────────────────────────────────────────
+
+    const landing = document.getElementById('landing');
+    const main    = document.getElementById('main');
+
+    landing.addEventListener('click', () => {
+        landing.style.opacity      = '0';
+        main.style.opacity         = '1';
+        main.style.pointerEvents   = 'all';
+        setTimeout(() => {
+            landing.style.display = 'none';
+        }, 800);
+    });
+
+
+    // ─── Word sets ────────────────────────────────────────────────────────────────
+
+    const wordSets = {
+        sacrifice: { words: ['sacrifice', 'love',    'energy',    'time',        'trust',   'comfort'],      index: 0 },
+        receive:   { words: ['receive',   'gain',    'keep',      'hold onto',   'find'],                    index: 0 },
+        precious:  { words: ['precious',  'fragile', 'uncertain', 'irreplaceable','raw'],                    index: 0 },
+        ideas:     { words: ['ideas',     'dreams',  'vulnerabilities', 'beliefs','fears'],                  index: 0 },
+        time:      { words: ['time',      'money',   'youth',     'attention',   'effort'],                  index: 0 },
+        hearts:    { words: ['hearts',    'selves',  'voices',    'hopes',       'futures'],                 index: 0 },
+        lost:      { words: ['lost',      'dismissed','broken',   'misunderstood','forgotten'],              index: 0 },
+        potential: { words: ['potential', 'uncertain','fleeting', 'unnamed',     'new'],                     index: 0 },
+        certainty: { words: ['certainty', 'safety',  'comfort',  'silence',     'stillness'],               index: 0 }
+    };
+
+
+    // ─── Build text block ─────────────────────────────────────────────────────────
+
+    const segments = [
+        { type: 'text', content: "for what it\u2019s worth is the gap between what we " },
+        { type: 'swap', key:  'sacrifice'  },
+        { type: 'text', content: " and what we might "                                  },
+        { type: 'swap', key:  'receive'    },
+        { type: 'text', content: ". it\u2019s the courage to risk something "           },
+        { type: 'swap', key:  'precious'   },
+        { type: 'text', content: " \u2014 our "                                         },
+        { type: 'swap', key:  'ideas'      },
+        { type: 'text', content: ", our "                                               },
+        { type: 'swap', key:  'time'       },
+        { type: 'text', content: ", our "                                               },
+        { type: 'swap', key:  'hearts'     },
+        { type: 'text', content: " \u2014 knowing full well they might be "            },
+        { type: 'swap', key:  'lost'       },
+        { type: 'text', content: ". it\u2019s choosing "                               },
+        { type: 'swap', key:  'potential'  },
+        { type: 'text', content: " meaning over comfortable "                          },
+        { type: 'swap', key:  'certainty'  },
+        { type: 'text', content: "."                                                    }
+    ];
+
+    const textBlock = document.getElementById('text-block');
+
+    segments.forEach(seg => {
+        if (seg.type === 'text') {
+            textBlock.appendChild(document.createTextNode(seg.content));
+        } else {
+            const span = document.createElement('span');
+            span.className        = 'swap-word';
+            span.textContent      = wordSets[seg.key].words[0];
+            span.dataset.key      = seg.key;
+            span.addEventListener('click', (e) => {
+                e.stopPropagation();
+                cycleWord(span, seg.key);
+            });
+            textBlock.appendChild(span);
+        }
+    });
+
+
+    // ─── Word cycling ─────────────────────────────────────────────────────────────
+
+    function cycleWord(span, key) {
+        const set   = wordSets[key];
+        set.index   = (set.index + 1) % set.words.length;
+        const next  = set.words[set.index];
+
+        // Fade out
+        span.style.opacity    = '0';
+        span.style.transform  = 'scale(1.08)';
+
+        setTimeout(() => {
+            span.textContent  = next;
+            span.style.opacity    = '1';
+            span.style.transform  = 'scale(1)';
+        }, 120);
+
+        addImage();
+    }
+
+
+    // ─── Image accumulation ───────────────────────────────────────────────────────
+
+    const allPaths = [];
+    for (let i = 1; i <= 10; i++) {
+        allPaths.push(`assets/s${i}_worth.png`);
+        allPaths.push(`assets/s${i}_notWorth.png`);
+        allPaths.push(`assets/s${i}_balanced.png`);
+    }
+
+    // Start with a shuffled queue
+    let queue        = shuffle([...allPaths]);
+    let queueIdx     = 0;
+    let visible      = [];   // currently shown img elements
+    const MAX_IMAGES = 8;
+
+    const imageLayer = document.getElementById('image-layer');
+
+    function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function addImage() {
+        // Reset queue when exhausted
+        if (queueIdx >= queue.length) {
+            queue    = shuffle([...allPaths]);
+            queueIdx = 0;
+        }
+
+        const path = queue[queueIdx++];
+        const size = Math.round(180 + Math.random() * 100);          // 180–280 px
+        const top  = (5  + Math.random() * 80).toFixed(1) + '%';    // 5–85%
+        const left = (2  + Math.random() * 76).toFixed(1) + '%';    // 2–78%
+        const rot  = (Math.random() * 12 - 6).toFixed(2)  + 'deg'; // -6–6 deg
+
+        const img          = document.createElement('img');
+        img.src            = path;
+        img.style.cssText  =
+            `position:absolute;` +
+            `width:${size}px;height:auto;` +
+            `top:${top};left:${left};` +
+            `transform:rotate(${rot});` +
+            `opacity:0;` +
+            `transition:opacity 0.6s ease;` +
+            `mix-blend-mode:multiply;` +
+            `pointer-events:none;` +
+            `box-shadow:2px 4px 20px rgba(0,0,0,0.12);`;
+
+        imageLayer.appendChild(img);
+
+        // Double rAF ensures the browser paints at opacity:0 before fading in
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            img.style.opacity = '1';
+        }));
+
+        visible.push(img);
+
+        // Remove oldest when over limit
+        if (visible.length > MAX_IMAGES) {
+            const oldest        = visible.shift();
+            oldest.style.opacity = '0';
+            setTimeout(() => oldest.remove(), 600);
+        }
+    }
+
+    function clearImageLayer() {
+        visible.forEach(img => {
+            img.style.opacity = '0';
+            setTimeout(() => img.remove(), 600);
+        });
+        visible = [];
+    }
+
+
+    // ─── Color cycling ────────────────────────────────────────────────────────────
+
+    const colorBtn = document.getElementById('color-btn');
+
+    colorBtn.addEventListener('click', () => {
+        schemeIndex = (schemeIndex + 1) % schemes.length;
+        applyScheme(schemeIndex);
+        colorBtn.textContent = '( changing\u2026 )';
+        setTimeout(() => { colorBtn.textContent = '( color )'; }, 400);
+    });
+
+
+    // ─── About modal ──────────────────────────────────────────────────────────────
+
+    const aboutBtn   = document.getElementById('about-btn');
+    const aboutModal = document.getElementById('about-modal');
+    const aboutClose = document.getElementById('about-close');
 
     function toggleAbout() {
         aboutModal.classList.toggle('visible');
     }
 
-    aboutToggle.addEventListener('click', toggleAbout);
+    aboutBtn.addEventListener('click',   toggleAbout);
     aboutClose.addEventListener('click', toggleAbout);
     aboutModal.addEventListener('click', (e) => {
         if (e.target === aboutModal) toggleAbout();
     });
 
-    // Begin button navigates to scenarios page
-    document.getElementById('jump-to-scenarios').addEventListener('click', () => {
-        window.location.href = 'scenarios.html';
+
+    // ─── Custom cursor ────────────────────────────────────────────────────────────
+
+    const cursor = document.getElementById('custom-cursor');
+
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left    = e.clientX + 'px';
+        cursor.style.top     = e.clientY + 'px';
+        cursor.style.opacity = '1';
     });
 
-    // ─── Logo: cinematic fade-in, then fade out on scroll ────────────────────────
+    document.addEventListener('mouseleave', () => {
+        cursor.style.opacity = '0';
+    });
 
-    const heroLogo = document.getElementById('hero-logo');
-
-    setTimeout(() => {
-        heroLogo.style.transition = 'opacity 2.5s ease';
-        heroLogo.style.opacity    = '1';
-    }, 200);
-    setTimeout(() => {
-        heroLogo.style.transition = '';
-    }, 2800);
-
-    setTimeout(() => {
-        window.addEventListener('scroll', () => {
-            const opacity = Math.max(0, 1 - (window.scrollY / (window.innerHeight * 0.4)));
-            heroLogo.style.opacity = opacity;
-        }, { passive: true });
-    }, 2800);
-
-    // ─── Definition reveal — scroll-triggered, one line at a time ────────────────
-
-    const revealLines = document.querySelectorAll('.reveal-line');
-
-    window.addEventListener('scroll', () => {
-        revealLines.forEach((line, i) => {
-            const triggerPoint = line.offsetTop - (window.innerHeight * 0.75);
-            if (window.scrollY >= triggerPoint && !line.classList.contains('visible')) {
-                setTimeout(() => {
-                    line.classList.add('visible');
-                }, i * 180);
-            }
-        });
-    }, { passive: true });
 });
