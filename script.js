@@ -77,9 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
-    let schemeIndex = 0;
-    const root   = document.documentElement;
-    const cursor = document.getElementById('custom-cursor');
+    let schemeIndex = 5;
+    const root       = document.documentElement;
+    const cursor     = document.getElementById('custom-cursor');
+    const imageLayer = document.getElementById('image-layer');
 
     function getCursorColor() {
         return getComputedStyle(root).getPropertyValue('--cursor-color').trim();
@@ -89,15 +90,23 @@ document.addEventListener('DOMContentLoaded', () => {
         return getComputedStyle(root).getPropertyValue('--text').trim();
     }
 
+    function clearImageLayer() {
+        imageLayer.innerHTML = '';
+    }
+
     function applyScheme(idx) {
         const s = schemes[idx];
         for (const [prop, val] of Object.entries(s)) {
             root.style.setProperty(prop, val);
         }
-        // Cursor defaults to --text on scheme change
+        document.body.style.background = s['--bg'];
+        document.body.style.color      = s['--text'];
         cursor.style.color = getTextColor();
         clearImageLayer();
     }
+
+    // Apply scheme 6 (index 5 — white/black) immediately before anything else
+    applyScheme(schemeIndex);
 
 
     // ─── Landing → Main transition ───────────────────────────────────────────────
@@ -186,12 +195,73 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
+    // ─── Word → image map ─────────────────────────────────────────────────────────
+
+    const imageMap = {
+        // certainty set
+        'certainty':       'assets/certainty.png',
+        'guarantees':      'assets/guarantees.png',
+        'permission':      'assets/permission.png',
+        'safety':          'assets/safety.png',
+        'proof':           'assets/proof.png',
+        // yourself set
+        'yourself':        'assets/yourself.png',
+        'the unknown':     'assets/the-unknown.png',
+        'what scares you': 'assets/what-scares-you.png',
+        'the feeling':     'assets/the-feeling.png',
+        'chance':          'assets/chance.png',
+        // precious set
+        'precious':        'assets/precious.png',
+        'fragile':         'assets/fragile.png',
+        'irreplaceable':   'assets/irreplaceable.png',
+        'uncertain':       'assets/uncertain.png',
+        'raw':             'assets/raw.png',
+        // dreams set
+        'dreams':          'assets/dreams.png',
+        'ideas':           'assets/ideas.png',
+        'hopes':           'assets/hopes.png',
+        'fears':           'assets/fears.png',
+        'secrets':         'assets/secrets.png',
+        // time set
+        'time':            'assets/time.png',
+        'money':           'assets/money.png',
+        'energy':          'assets/energy.png',
+        'youth':           'assets/youth.png',
+        'attention':       'assets/attention.png',
+        // heart set
+        'heart':           'assets/heart.png',
+        'voice':           'assets/voice.png',
+        'self':            'assets/self.png',
+        'trust':           'assets/trust.png',
+        'pride':           'assets/pride.png',
+        // lands set
+        'lands':           'assets/lands.png',
+        'falls':           'assets/falls.png',
+        'ends':            'assets/ends.png',
+        'plays out':       'assets/plays-out.png',
+        'unfolds':         'assets/unfolds.png',
+        // risk set
+        'risk':            'assets/risk.png',
+        'leap':            'assets/leap.png',
+        'loss':            'assets/loss.png',
+        'bet':             'assets/bet.png',
+        'sacrifice':       'assets/sacrifice.png',
+        // reach set
+        'reach':           'assets/reach.png',
+        'try':             'assets/try.png',
+        'begin':           'assets/begin.png',
+        'choose':          'assets/choose.png',
+        'go':              'assets/go.png'
+    };
+
+
     // ─── Word cycling ─────────────────────────────────────────────────────────────
 
     function cycleWord(span, key) {
-        const set  = wordSets[key];
-        set.index  = (set.index + 1) % set.words.length;
-        const next = set.words[set.index];
+        const set         = wordSets[key];
+        const currentWord = set.words[set.index]; // word currently displayed when clicked
+        set.index         = (set.index + 1) % set.words.length;
+        const next        = set.words[set.index];
 
         span.style.opacity   = '0';
         span.style.transform = 'scale(1.08)';
@@ -208,45 +278,18 @@ document.addEventListener('DOMContentLoaded', () => {
             cursor.textContent = 'try your luck';
         }, 600);
 
-        addImage();
+        addImage(currentWord);
     }
 
 
     // ─── Image system — one image at a time ───────────────────────────────────────
 
-    const allPaths = [];
-    for (let i = 1; i <= 10; i++) {
-        allPaths.push(`assets/s${i}_worth.png`);
-        allPaths.push(`assets/s${i}_notWorth.png`);
-        allPaths.push(`assets/s${i}_balanced.png`);
-    }
-
-    let queue    = shuffle([...allPaths]);
-    let queueIdx = 0;
-
-    const imageLayer = document.getElementById('image-layer');
-
-    // Safe to call now — imageLayer is declared above
-    applyScheme(0);
-
-    function shuffle(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-    }
-
-    function addImage() {
-        // Remove existing image
+    function addImage(word) {
         clearImageLayer();
 
-        if (queueIdx >= queue.length) {
-            queue    = shuffle([...allPaths]);
-            queueIdx = 0;
-        }
+        const path = imageMap[word];
+        if (!path) return;
 
-        const path = queue[queueIdx++];
         const size = (28 + Math.random() * 14).toFixed(1) + 'vh'; // 28–42vh
         const left = (5  + Math.random() * 50).toFixed(1) + 'vw'; // 5–55vw
         const top  = (5  + Math.random() * 45).toFixed(1) + 'vh'; // 5–50vh
@@ -270,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         img.style.cssText = `width:100%;height:auto;display:block;`;
         img.onerror       = () => { wrapper.remove(); };
 
-        // Tint layer — background:var(--bg) updates automatically with scheme
+        // Tint layer — var(--bg) and var(--tint-opacity) update automatically with scheme
         const tint = document.createElement('div');
         tint.style.cssText =
             `position:absolute;inset:0;` +
@@ -287,11 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
             wrapper.style.opacity = '1';
         }));
     }
-
-    function clearImageLayer() {
-        imageLayer.innerHTML = '';
-    }
-
 
     // ─── Color cycling ────────────────────────────────────────────────────────────
 

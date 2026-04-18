@@ -1,10 +1,10 @@
 :root {
-    --bg:           rgb(255,196,255);
-    --text:         rgb(255,0,20);
-    --text-sub:     rgba(255,0,20,0.5);
-    --accent:       rgb(255,0,20);
-    --cursor-color: rgb(255,0,20);
-    --tint-opacity: 0.5;
+    --bg:           #ffffff;
+    --text:         #000000;
+    --text-sub:     rgba(0,0,0,0.5);
+    --accent:       #000000;
+    --cursor-color: #0047FF;
+    --tint-opacity: 0.3;
 }
 
 *, *::before, *::after {
@@ -20,7 +20,9 @@ html, body {
 }
 
 body {
+    background-color: #ffffff;
     background: var(--bg);
+    color: #000000;
     color: var(--text);
     font-family: 'Playfair Display', serif;
     cursor: none !important;
