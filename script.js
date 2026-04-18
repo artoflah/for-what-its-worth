@@ -85,9 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let schemeIndex = 5;
-    const root       = document.documentElement;
-    const cursor     = document.getElementById('custom-cursor');
-    const imageLayer = document.getElementById('image-layer');
+    const root   = document.documentElement;
+    const cursor = document.getElementById('custom-cursor');
+    const disc   = document.getElementById('disc');
 
     function getCursorColor() {
         return getComputedStyle(root).getPropertyValue('--cursor-color').trim();
@@ -95,10 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getTextColor() {
         return getComputedStyle(root).getPropertyValue('--text').trim();
-    }
-
-    function clearImageLayer() {
-        imageLayer.innerHTML = '';
     }
 
     function applyScheme(idx) {
@@ -109,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.background = s['--bg'];
         document.body.style.color      = s['--text'];
         cursor.style.color = getTextColor();
-        clearImageLayer();
+        disc.style.background = getComputedStyle(root).getPropertyValue('--bg').trim();
     }
 
     // Apply scheme 6 (index 5 — white/black) immediately before anything else
@@ -289,52 +285,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // ─── Image system — one image at a time ───────────────────────────────────────
+    // ─── Image system ─────────────────────────────────────────────────────────────
 
     function addImage(word) {
-        clearImageLayer();
-
         const path = imageMap[word];
         if (!path) return;
 
-        const sizePx = Math.round((28 + Math.random() * 14) / 100 * window.innerHeight);
-        const left   = (5  + Math.random() * 50).toFixed(1) + 'vw'; // 5–55vw
-        const top    = (5  + Math.random() * 45).toFixed(1) + 'vh'; // 5–50vh
-        const bgVal  = getComputedStyle(root).getPropertyValue('--bg').trim();
+        const sizes   = ['28vh', '32vh', '36vh', '40vh', '44vh'];
+        const size    = sizes[Math.floor(Math.random() * sizes.length)];
+        const left    = Math.floor(Math.random() * 55) + 'vw';
+        const top     = Math.floor(Math.random() * 50) + 'vh';
+        const bgColor = getComputedStyle(root).getPropertyValue('--bg').trim();
 
-        // Wrapper
-        const wrapper = document.createElement('div');
-        wrapper.style.cssText =
-            `position:absolute;` +
-            `width:${sizePx}px;height:${sizePx}px;` +
-            `left:${left};top:${top};` +
-            `overflow:hidden;` +
-            `opacity:0;` +
-            `transition:opacity 0.6s ease;` +
-            `pointer-events:none;`;
-        wrapper.style.background = bgVal;
+        disc.style.width      = size;
+        disc.style.height     = size;
+        disc.style.left       = left;
+        disc.style.top        = top;
+        disc.style.background = bgColor;
+        disc.style.opacity    = '0.5';
+        disc.innerHTML        = '';
 
-        // Image
         const img = document.createElement('img');
         img.src           = path;
-        img.style.cssText = `width:100%;height:auto;display:block;`;
-        img.onerror       = () => { wrapper.remove(); };
-
-        // Tint layer — inherits wrapper background, darkens image with current page color
-        const tint = document.createElement('div');
-        tint.style.cssText =
-            `position:absolute;inset:0;` +
-            `background:inherit;` +
-            `mix-blend-mode:darken;` +
-            `pointer-events:none;`;
-
-        wrapper.appendChild(img);
-        wrapper.appendChild(tint);
-        imageLayer.appendChild(wrapper);
-
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-            wrapper.style.opacity = '1';
-        }));
+        img.style.cssText = `width:100%;height:100%;object-fit:cover;display:block;`;
+        disc.appendChild(img);
     }
 
     // ─── Color cycling ────────────────────────────────────────────────────────────
