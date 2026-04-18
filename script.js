@@ -1,3 +1,19 @@
+// ─── Custom cursor — runs immediately, outside DOMContentLoaded ──────────────
+
+(function () {
+    const cursor = document.getElementById('custom-cursor');
+    if (!cursor) return;
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left    = e.clientX + 'px';
+        cursor.style.top     = e.clientY + 'px';
+        cursor.style.opacity = '1';
+    });
+    document.addEventListener('mouseleave', () => {
+        cursor.style.opacity = '0';
+    });
+}());
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // ─── Color schemes ────────────────────────────────────────────────────────────
@@ -259,19 +275,5 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === aboutModal) toggleAbout();
     });
 
-
-    // ─── Custom cursor ────────────────────────────────────────────────────────────
-
-    const cursor = document.getElementById('custom-cursor');
-
-    document.addEventListener('mousemove', (e) => {
-        cursor.style.left    = e.clientX + 'px';
-        cursor.style.top     = e.clientY + 'px';
-        cursor.style.opacity = '1';
-    });
-
-    document.addEventListener('mouseleave', () => {
-        cursor.style.opacity = '0';
-    });
 
 });
