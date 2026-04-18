@@ -12,14 +12,20 @@
             height: 100%;
         }
 
+        body {
+            background-image: none;
+            background: #f5f0e8;
+        }
+
         #corner-logo {
             position: fixed;
             top: 18px;
             left: 20px;
-            width: 130px;
+            width: 80px;
             height: auto;
+            object-fit: contain;
             mix-blend-mode: multiply;
-            opacity: 0.5;
+            opacity: 0.6;
             z-index: 20;
             pointer-events: none;
         }
@@ -38,13 +44,13 @@
 </head>
 <body>
 
-    <img id="corner-logo" src="assets/logoforwhat.png" alt="">
+    <img id="corner-logo" src="assets/ticket.png" alt="for what its worth">
 
     <button class="about-btn-fixed" id="aboutToggle">ABOUT</button>
 
     <div class="about-modal" id="aboutModal">
         <div class="about-content">
-            <button class="about-close">&times;</button>
+            <button class="about-close">CLOSE</button>
             <h2>"For What It's Worth."</h2>
             <p><strong><em>phrase</em></strong><br>The moment we decide to not be afraid of our actions & decisions. When we take a step outside the box from our safety net. The courage we take when the outcome isn't guaranteed. When there isn't a define yes or no, is this good or not.</p>
             <p>For what it's worth is like investing all your money into a passion project knowing you have no fall back. Or putting all your love into someone who might not withstand time. Or voicing an opinion when there is no need to.</p>
@@ -60,6 +66,8 @@
     </div>
 
     <div id="scenario-stage"></div>
+
+    <div id="custom-cursor">try your luck</div>
 
     <script src="scenarios.js"></script>
 </body>

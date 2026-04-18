@@ -16,6 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === aboutModal) toggleAbout();
     });
 
+    // ─── Custom cursor ────────────────────────────────────────────────────────────
+
+    const cursor = document.getElementById('custom-cursor');
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left    = e.clientX + 'px';
+        cursor.style.top     = e.clientY + 'px';
+        cursor.style.opacity = '1';
+    });
+    document.addEventListener('mouseleave', () => {
+        cursor.style.opacity = '0';
+    });
+
 
     // ─── Scenario data ────────────────────────────────────────────────────────────
 
@@ -309,12 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
         commitBtn.textContent = 'is this worth it to you?';
         commitBtn.style.cssText =
             'position:absolute;bottom:80px;left:50%;transform:translateX(-50%);z-index:20;' +
-            'font-family:"Cormorant Garamond",serif;font-style:italic;' +
-            'font-size:clamp(13px,1.4vw,17px);color:var(--text-primary);' +
-            'background:transparent;border:0.5px solid var(--border-mid);' +
-            'padding:10px 28px;border-radius:0;cursor:pointer;' +
-            'opacity:0;transition:opacity 0.5s ease;pointer-events:none;' +
-            'white-space:nowrap;';
+            'opacity:0;pointer-events:none;';
         commitBtn.addEventListener('click', () => {
             commitBtn.style.opacity      = '0';
             commitBtn.style.pointerEvents = 'none';
@@ -406,17 +413,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Verdict
         const verdictEl = document.createElement('div');
-        verdictEl.style.cssText =
-            'font-family:"Bebas Neue",sans-serif;font-size:clamp(36px,5vw,56px);' +
-            'color:#e8e3d8;letter-spacing:0.05em;line-height:1;';
+        verdictEl.className   = 'sg-result-verdict';
         verdictEl.textContent = verdictMap[resultKey];
 
         // Description
         const descEl = document.createElement('div');
-        descEl.style.cssText =
-            'font-family:"Cormorant Garamond",serif;font-style:italic;' +
-            'font-size:clamp(13px,1.5vw,17px);color:rgba(232,227,216,0.65);' +
-            'max-width:480px;text-align:center;line-height:1.6;';
+        descEl.className   = 'sg-result-desc';
         descEl.textContent = scenario.result[resultKey];
 
         // Result image
@@ -429,20 +431,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Next button
         const isLast  = index >= scenarios.length - 1;
         const nextBtn = document.createElement('button');
-        nextBtn.style.cssText =
-            'font-family:"Inter Tight",sans-serif;font-size:10px;letter-spacing:0.22em;' +
-            'text-transform:uppercase;color:rgba(232,227,216,0.5);background:transparent;' +
-            'border:0.5px solid rgba(232,227,216,0.2);padding:8px 20px;border-radius:0;' +
-            'cursor:pointer;margin-top:8px;transition:color 0.2s ease,border-color 0.2s ease;';
+        nextBtn.className   = 'sg-result-next';
         nextBtn.textContent = isLast ? 'that\'s a wrap.' : 'next scenario →';
-        nextBtn.addEventListener('mouseenter', () => {
-            nextBtn.style.color       = 'rgba(232,227,216,0.9)';
-            nextBtn.style.borderColor = 'rgba(232,227,216,0.5)';
-        });
-        nextBtn.addEventListener('mouseleave', () => {
-            nextBtn.style.color       = 'rgba(232,227,216,0.5)';
-            nextBtn.style.borderColor = 'rgba(232,227,216,0.2)';
-        });
         nextBtn.addEventListener('click', () => {
             drawer.style.transform  = 'translateY(100%)';
             stage.style.opacity     = '1';

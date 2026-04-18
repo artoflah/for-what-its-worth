@@ -1,22 +1,7 @@
-@font-face {
-    font-family: 'PhotographScript';
-    src: url('assets/Photograph\ Script\ Free\ Personal\ .otf') format("opentype");
-}
-
-@font-face {
-    font-family: 'Moderniz';
-    src: url('assets/Moderniz.otf') format("opentype");
-}
-
-@font-face {
-    font-family: 'Syne';
-    src: url('assets/Syne-VariableFont_wght.ttf') format("opentype");
-}
 
 :root {
-    --bg: #e8e3d8;
-    --paper: #e8e3d8;
     --ink: #1c1510;
+    --cream: #f5f0e8;
     --text-primary: #1c1510;
     --text-secondary: rgba(28,21,16,0.6);
     --text-tertiary: rgba(28,21,16,0.28);
@@ -123,9 +108,9 @@ body {
 .about-modal {
     position: fixed;
     inset: 0;
-    background: rgba(232, 227, 216, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(245, 240, 232, 0.92);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     z-index: 100;
     display: flex;
     align-items: center;
@@ -142,15 +127,16 @@ body {
 
 .about-content {
     position: relative;
-    width: 480px;
+    width: 520px;
     max-width: 88vw;
     max-height: 80vh;
     overflow-y: auto;
     background: transparent;
     border: none;
+    border-top: 0.5px solid var(--border);
     box-shadow: none;
     border-radius: 0;
-    padding: 0;
+    padding: 2rem 0 0 0;
 }
 
 .about-content::-webkit-scrollbar {
@@ -162,13 +148,13 @@ body {
     top: 0;
     right: 0;
     font-family: 'Inter Tight', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.2em;
+    font-size: 10px;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--text-tertiary);
     background: transparent;
     border: none;
-    cursor: pointer;
+    cursor: none;
     padding: 0;
     transition: color 0.2s ease;
 }
@@ -229,15 +215,35 @@ body {
     margin: 2rem 0;
 }
 
+/* Custom cursor */
+body { cursor: none !important; }
+* { cursor: none !important; }
+
+#custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text-primary);
+    opacity: 0;
+    transform: translate(12px, -50%);
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    user-select: none;
+}
+
 /* Definition section */
 #definition {
     height: auto;
     min-height: auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 20vh 12vw 15vh;
+    padding: 18vh 10vw 10vh;
     background: transparent;
     position: relative;
     z-index: 20;
@@ -246,12 +252,13 @@ body {
 .reveal-line {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: clamp(18px, 2.4vw, 32px);
+    font-size: clamp(22px, 3vw, 38px);
     line-height: 1.7;
     text-align: center;
     color: var(--text-primary);
-    max-width: 760px;
-    margin-bottom: 12vh;
+    font-weight: 300;
+    max-width: 820px;
+    margin: 0 auto 12vh;
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 1.4s ease, transform 1.4s ease;
@@ -260,35 +267,38 @@ body {
 .reveal-line.visible {
     opacity: 1;
     transform: translateY(0);
+    border-left: 1.5px solid var(--border);
+    padding-left: 1.5rem;
 }
 
 .definition-label {
     font-family: 'Inter Tight', sans-serif;
     font-size: 10px;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--text-tertiary);
-    margin-top: 1rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
 }
 
 #jump-to-scenarios {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(16px, 1.8vw, 20px);
+    letter-spacing: 0.05em;
+    color: var(--text-primary);
     background: transparent;
     border: 0.5px solid var(--border-mid);
-    color: var(--text-secondary);
-    padding: 10px 28px;
+    padding: 12px 36px;
     border-radius: 0;
-    cursor: pointer;
-    margin-top: 2rem;
-    transition: color 0.2s ease, border-color 0.2s ease;
+    cursor: none;
+    margin-bottom: 0;
+    transition: background 0.4s ease, color 0.4s ease;
 }
 
 #jump-to-scenarios:hover {
-    color: var(--text-primary);
-    border-color: var(--ink);
+    background: var(--text-primary);
+    color: var(--cream);
 }
 
 /* Scenario grid decorations */
@@ -324,20 +334,26 @@ body {
 .img-fragment {
     position: absolute;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(28,21,16,0.15);
+    box-shadow: 2px 4px 16px rgba(28,21,16,0.15);
     z-index: 2;
     user-select: none;
     -webkit-user-select: none;
+    transition: transform 0.6s ease, opacity 0.6s ease;
+}
+
+.img-fragment:hover {
+    transform: rotate(0deg) !important;
+    opacity: 1 !important;
 }
 
 .sg-quote {
     position: absolute;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: clamp(11px, 1.3vw, 15px);
+    font-size: clamp(11px, 1.2vw, 14px);
     color: var(--text-tertiary);
-    line-height: 1.4;
-    max-width: 160px;
+    line-height: 1.5;
+    max-width: 180px;
     z-index: 3;
 }
 
@@ -357,30 +373,34 @@ body {
 }
 
 .sg-number {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(96px, 14vw, 140px);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(80px, 14vw, 160px);
     color: var(--text-primary);
     line-height: 1;
-    letter-spacing: 0.02em;
+    font-weight: 300;
+    letter-spacing: -0.02em;
 }
 
 .sg-title {
     font-family: 'Inter Tight', sans-serif;
-    font-size: clamp(11px, 1.2vw, 14px);
-    letter-spacing: 0.2em;
+    font-size: clamp(9px, 1vw, 11px);
+    letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--text-tertiary);
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 .sg-question {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: clamp(16px, 2.2vw, 26px);
-    color: var(--text-secondary);
+    font-size: clamp(18px, 2.8vw, 32px);
+    color: var(--text-primary);
     line-height: 1.5;
-    margin-top: 10px;
-    max-width: 420px;
+    font-weight: 300;
+    max-width: 460px;
+    text-align: center;
+    margin-top: 12px;
 }
 
 .sg-divider {
@@ -398,16 +418,17 @@ body {
 
 .sg-pan {
     border: 0.5px solid var(--border-mid);
-    padding: 10px 12px;
-    min-width: 90px;
-    min-height: 64px;
+    padding: 12px 14px;
+    min-width: 100px;
+    min-height: 80px;
     border-radius: 0;
+    background: transparent;
 }
 
 .sg-pan-label {
     font-family: 'Inter Tight', sans-serif;
-    font-size: clamp(10px, 1vw, 13px);
-    letter-spacing: 0.2em;
+    font-size: clamp(9px, 0.9vw, 11px);
+    letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--text-tertiary);
 }
@@ -415,7 +436,7 @@ body {
 .sg-vs {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: 11px;
+    font-size: 16px;
     color: var(--text-tertiary);
     align-self: center;
 }
@@ -431,8 +452,11 @@ body {
     background: rgba(28,21,16,0.04);
     border: 0.5px solid var(--border);
     color: var(--text-secondary);
-    cursor: grab;
+    cursor: none;
     z-index: 5;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .sg-chip:hover {
@@ -460,8 +484,8 @@ body {
     position: absolute;
     bottom: 20px;
     font-family: 'Inter Tight', sans-serif;
-    font-size: clamp(9px, 0.9vw, 11px);
-    letter-spacing: 0.18em;
+    font-size: clamp(8px, 0.85vw, 10px);
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text-tertiary);
     z-index: 10;
@@ -469,6 +493,73 @@ body {
 
 .sg-bottom-left  { left: 24px; }
 .sg-bottom-right { right: 24px; }
+
+/* Commit button */
+#commit-btn {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(14px, 1.5vw, 18px);
+    letter-spacing: 0.05em;
+    color: var(--text-primary);
+    background: transparent;
+    border: 0.5px solid var(--border-mid);
+    padding: 10px 32px;
+    border-radius: 0;
+    cursor: none;
+    white-space: nowrap;
+    transition: background 0.3s ease, color 0.3s ease, opacity 0.5s ease;
+}
+
+#commit-btn:hover {
+    background: var(--text-primary);
+    color: var(--cream);
+}
+
+/* Result drawer content */
+#result-drawer {
+    border-top: 1px solid rgba(245, 240, 232, 0.1);
+}
+
+.sg-result-verdict {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(32px, 5vw, 56px);
+    color: var(--cream);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    line-height: 1;
+}
+
+.sg-result-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(14px, 1.6vw, 18px);
+    color: rgba(245, 240, 232, 0.6);
+    max-width: 480px;
+    text-align: center;
+    line-height: 1.6;
+    margin-top: 6px;
+}
+
+.sg-result-next {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(245, 240, 232, 0.4);
+    background: transparent;
+    border: 0.5px solid rgba(245, 240, 232, 0.2);
+    padding: 8px 20px;
+    border-radius: 0;
+    cursor: none;
+    margin-top: 8px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.sg-result-next:hover {
+    color: rgba(245, 240, 232, 0.9);
+    border-color: rgba(245, 240, 232, 0.5);
+}
 
 /* Drag ghost */
 .dragging {
@@ -479,12 +570,6 @@ body {
     white-space: nowrap !important;
     width: auto !important;
     max-width: none !important;
-}
-
-.value-draggable {
-    white-space: nowrap;
-    width: auto;
-    display: inline-block;
 }
 
 @keyframes fadeIn {
@@ -503,6 +588,5 @@ body {
 
     .about-content {
         width: 95%;
-        padding: 32px 24px;
     }
 }

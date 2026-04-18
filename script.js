@@ -30,10 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
         heroLogo.style.transition = '';
     }, 2800);
 
-    window.addEventListener('scroll', () => {
-        const opacity = Math.max(0, 1 - (window.scrollY / (window.innerHeight * 0.4)));
-        heroLogo.style.opacity = opacity;
-    }, { passive: true });
+    setTimeout(() => {
+        window.addEventListener('scroll', () => {
+            const opacity = Math.max(0, 1 - (window.scrollY / (window.innerHeight * 0.4)));
+            heroLogo.style.opacity = opacity;
+        }, { passive: true });
+    }, 2800);
 
     // ─── Definition reveal — scroll-triggered, one line at a time ────────────────
 
