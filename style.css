@@ -1,9 +1,10 @@
 :root {
-    --bg:           #FF69B4;
-    --text:         #ffffff;
-    --text-sub:     rgba(255,255,255,0.5);
-    --accent:       #ffffff;
-    --cursor-color: #FFE500;
+    --bg:           rgb(255,196,255);
+    --text:         rgb(255,0,20);
+    --text-sub:     rgba(255,0,20,0.5);
+    --accent:       rgb(255,0,20);
+    --cursor-color: rgb(255,0,20);
+    --tint-opacity: 0.5;
 }
 
 *, *::before, *::after {
@@ -85,20 +86,6 @@ body {
     overflow: hidden;
 }
 
-/* ─── Watermark ───────────────────────────────────────────────────────────── */
-
-#watermark {
-    position: fixed;
-    top: 20px;
-    left: 24px;
-    width: 72px;
-    height: auto;
-    mix-blend-mode: multiply;
-    opacity: 0.4;
-    z-index: 10;
-    pointer-events: none;
-}
-
 /* ─── Text block ──────────────────────────────────────────────────────────── */
 
 #text-block {
@@ -118,12 +105,14 @@ body {
     font-style: italic;
     display: inline-block;
     color: var(--accent);
+    opacity: 1;
     cursor: none;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, opacity 0.2s ease;
 }
 
 .swap-word:hover {
     color: var(--cursor-color);
+    opacity: 0.6;
 }
 
 /* ─── Blur when modal open ────────────────────────────────────────────────── */
@@ -167,14 +156,6 @@ body {
     color: var(--text);
 }
 
-#bottom-title {
-    font-family: 'Playfair Display', serif;
-    font-style: normal;
-    font-size: 15px;
-    color: var(--text-sub);
-    transition: color 0.6s ease;
-}
-
 /* ─── About modal ─────────────────────────────────────────────────────────── */
 
 #about-modal {
@@ -215,7 +196,7 @@ body {
     right: 36px;
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: 14px;
+    font-size: 12px;
     color: var(--text);
     opacity: 0.4;
     background: transparent;
@@ -232,7 +213,7 @@ body {
 #about-content h2 {
     font-family: 'Playfair Display', serif;
     font-style: normal;
-    font-size: clamp(11px, 1.2vw, 14px);
+    font-size: 11px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text);
@@ -244,7 +225,7 @@ body {
 #about-content h3 {
     font-family: 'Playfair Display', serif;
     font-style: normal;
-    font-size: clamp(11px, 1.2vw, 14px);
+    font-size: 11px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text);
@@ -257,7 +238,7 @@ body {
 #about-content h4 {
     font-family: 'Playfair Display', serif;
     font-style: normal;
-    font-size: clamp(11px, 1.2vw, 14px);
+    font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text);
@@ -269,8 +250,8 @@ body {
 #about-content p {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: clamp(20px, 2.5vw, 36px);
-    line-height: 1.8;
+    font-size: clamp(14px, 1.6vw, 18px);
+    line-height: 1.7;
     color: var(--text);
     font-weight: 400;
     text-align: center;
@@ -295,7 +276,7 @@ body {
     font-family: 'Playfair Display', serif;
     font-style: italic;
     font-size: 13px;
-    color: var(--cursor-color);
+    color: var(--text);
     opacity: 0;
     transform: translate(14px, -50%);
     transition: opacity 0.3s ease;

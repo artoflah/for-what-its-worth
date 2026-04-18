@@ -20,46 +20,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const schemes = [
         {
-            '--bg':           '#FF69B4',
+            '--bg':           'rgb(255,196,255)',
+            '--text':         'rgb(255,0,20)',
+            '--text-sub':     'rgba(255,0,20,0.5)',
+            '--accent':       'rgb(255,0,20)',
+            '--cursor-color': 'rgb(255,0,20)',
+            '--tint-opacity': '0.5'
+        },
+        {
+            '--bg':           'rgb(230,174,211)',
+            '--text':         'rgb(107,58,56)',
+            '--text-sub':     'rgba(107,58,56,0.5)',
+            '--accent':       'rgb(107,58,56)',
+            '--cursor-color': 'rgb(107,58,56)',
+            '--tint-opacity': '0.5'
+        },
+        {
+            '--bg':           'rgb(167,184,194)',
+            '--text':         'rgb(255,246,98)',
+            '--text-sub':     'rgba(255,246,98,0.5)',
+            '--accent':       'rgb(255,246,98)',
+            '--cursor-color': 'rgb(255,246,98)',
+            '--tint-opacity': '0.5'
+        },
+        {
+            '--bg':           'rgb(247,247,247)',
+            '--text':         'rgb(78,93,97)',
+            '--text-sub':     'rgba(78,93,97,0.5)',
+            '--accent':       'rgb(78,93,97)',
+            '--cursor-color': 'rgb(78,93,97)',
+            '--tint-opacity': '0.5'
+        },
+        {
+            '--bg':           'rgb(254,81,54)',
+            '--text':         'rgb(255,246,98)',
+            '--text-sub':     'rgba(255,246,98,0.5)',
+            '--accent':       'rgb(255,246,98)',
+            '--cursor-color': 'rgb(255,246,98)',
+            '--tint-opacity': '0.5'
+        },
+        {
+            '--bg':           '#ffffff',
+            '--text':         '#000000',
+            '--text-sub':     'rgba(0,0,0,0.5)',
+            '--accent':       '#000000',
+            '--cursor-color': '#000000',
+            '--tint-opacity': '0.3'
+        },
+        {
+            '--bg':           '#000000',
             '--text':         '#ffffff',
             '--text-sub':     'rgba(255,255,255,0.5)',
             '--accent':       '#ffffff',
-            '--cursor-color': '#FFE500'
-        },
-        {
-            '--bg':           '#0047FF',
-            '--text':         '#ffffff',
-            '--text-sub':     'rgba(255,255,255,0.5)',
-            '--accent':       '#ffffff',
-            '--cursor-color': '#FF3CAC'
-        },
-        {
-            '--bg':           '#39FF14',
-            '--text':         '#0a0a0a',
-            '--text-sub':     'rgba(10,10,10,0.5)',
-            '--accent':       '#0a0a0a',
-            '--cursor-color': '#FF0066'
-        },
-        {
-            '--bg':           '#C8A4D4',
-            '--text':         '#ffffff',
-            '--text-sub':     'rgba(255,255,255,0.5)',
-            '--accent':       '#ffffff',
-            '--cursor-color': '#FFE500'
-        },
-        {
-            '--bg':           '#7D9B76',
-            '--text':         '#ffffff',
-            '--text-sub':     'rgba(255,255,255,0.5)',
-            '--accent':       '#ffffff',
-            '--cursor-color': '#FFE500'
-        },
-        {
-            '--bg':           '#FFE156',
-            '--text':         '#1a1a1a',
-            '--text-sub':     'rgba(26,26,26,0.5)',
-            '--accent':       '#1a1a1a',
-            '--cursor-color': '#FF3CAC'
+            '--cursor-color': '#ffffff',
+            '--tint-opacity': '0.5'
         }
     ];
 
@@ -71,13 +85,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return getComputedStyle(root).getPropertyValue('--cursor-color').trim();
     }
 
+    function getTextColor() {
+        return getComputedStyle(root).getPropertyValue('--text').trim();
+    }
+
     function applyScheme(idx) {
         const s = schemes[idx];
         for (const [prop, val] of Object.entries(s)) {
             root.style.setProperty(prop, val);
         }
-        // Update cursor color to match new scheme
-        cursor.style.color = getCursorColor();
+        // Cursor defaults to --text on scheme change
+        cursor.style.color = getTextColor();
         clearImageLayer();
     }
 
@@ -157,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             span.addEventListener('mouseleave', () => {
                 cursor.textContent = 'try your luck';
-                cursor.style.color = getCursorColor();
+                cursor.style.color = getTextColor();
             });
             span.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -184,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
             span.style.transform = 'scale(1)';
         }, 120);
 
-        // Cursor echoes the new word, then reverts
         cursor.textContent = next;
         cursor.style.color = getCursorColor();
         setTimeout(() => {
@@ -195,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // ─── Image accumulation ───────────────────────────────────────────────────────
+    // ─── Image system — one image at a time ───────────────────────────────────────
 
     const allPaths = [];
     for (let i = 1; i <= 10; i++) {
@@ -204,15 +221,13 @@ document.addEventListener('DOMContentLoaded', () => {
         allPaths.push(`assets/s${i}_balanced.png`);
     }
 
-    let queue        = shuffle([...allPaths]);
-    let queueIdx     = 0;
-    let visible      = [];
-    const MAX_IMAGES = 8;
-
-    // Safe to call now — visible is declared above
-    applyScheme(0);
+    let queue    = shuffle([...allPaths]);
+    let queueIdx = 0;
 
     const imageLayer = document.getElementById('image-layer');
+
+    // Safe to call now — imageLayer is declared above
+    applyScheme(0);
 
     function shuffle(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
@@ -223,52 +238,58 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addImage() {
+        // Remove existing image
+        clearImageLayer();
+
         if (queueIdx >= queue.length) {
             queue    = shuffle([...allPaths]);
             queueIdx = 0;
         }
 
-        const path  = queue[queueIdx++];
-        const sizes = [160, 220, 280, 360, 440, 520];
-        const size  = sizes[Math.floor(Math.random() * sizes.length)];
-        const top   = (2  + Math.random() * 73).toFixed(1) + '%';   // 2–75%
-        const left  = (2  + Math.random() * 66).toFixed(1) + '%';   // 2–68%
-        const rot   = (Math.random() * 12 - 6).toFixed(2)  + 'deg'; // -6–6 deg
+        const path = queue[queueIdx++];
+        const size = (28 + Math.random() * 14).toFixed(1) + 'vh'; // 28–42vh
+        const left = (5  + Math.random() * 50).toFixed(1) + 'vw'; // 5–55vw
+        const top  = (5  + Math.random() * 45).toFixed(1) + 'vh'; // 5–50vh
+        const rot  = (Math.random() * 12 - 6).toFixed(2)  + 'deg';
 
-        const img         = document.createElement('img');
-        img.src           = path;
-        img.style.cssText =
+        // Wrapper
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText =
             `position:absolute;` +
-            `width:${size}px;height:auto;` +
-            `top:${top};left:${left};` +
+            `width:${size};` +
+            `left:${left};top:${top};` +
             `transform:rotate(${rot});` +
+            `overflow:hidden;` +
             `opacity:0;` +
             `transition:opacity 0.6s ease;` +
-            `mix-blend-mode:multiply;` +
-            `pointer-events:none;` +
-            `box-shadow:2px 4px 20px rgba(0,0,0,0.12);`;
+            `pointer-events:none;`;
 
-        imageLayer.appendChild(img);
+        // Image
+        const img = document.createElement('img');
+        img.src           = path;
+        img.style.cssText = `width:100%;height:auto;display:block;`;
+        img.onerror       = () => { wrapper.remove(); };
+
+        // Tint layer — background:var(--bg) updates automatically with scheme
+        const tint = document.createElement('div');
+        tint.style.cssText =
+            `position:absolute;inset:0;` +
+            `background:var(--bg);` +
+            `mix-blend-mode:darken;` +
+            `opacity:var(--tint-opacity);` +
+            `pointer-events:none;`;
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(tint);
+        imageLayer.appendChild(wrapper);
 
         requestAnimationFrame(() => requestAnimationFrame(() => {
-            img.style.opacity = '0.85';
+            wrapper.style.opacity = '1';
         }));
-
-        visible.push(img);
-
-        if (visible.length > MAX_IMAGES) {
-            const oldest         = visible.shift();
-            oldest.style.opacity = '0';
-            setTimeout(() => oldest.remove(), 600);
-        }
     }
 
     function clearImageLayer() {
-        visible.forEach(img => {
-            img.style.opacity = '0';
-            setTimeout(() => img.remove(), 600);
-        });
-        visible = [];
+        imageLayer.innerHTML = '';
     }
 
 
@@ -279,6 +300,17 @@ document.addEventListener('DOMContentLoaded', () => {
     colorBtn.addEventListener('click', () => {
         schemeIndex = (schemeIndex + 1) % schemes.length;
         applyScheme(schemeIndex);
+
+        // Reset all swap words to index 0
+        document.querySelectorAll('.swap-word').forEach(word => {
+            const key = word.dataset.key;
+            wordSets[key].index  = 0;
+            word.textContent     = wordSets[key].words[0];
+        });
+
+        // Cursor back to --text of new scheme
+        cursor.style.color = getTextColor();
+
         colorBtn.textContent = '( changing\u2026 )';
         setTimeout(() => { colorBtn.textContent = '( color )'; }, 400);
     });
