@@ -85,9 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let schemeIndex = 5;
-    const root   = document.documentElement;
-    const cursor = document.getElementById('custom-cursor');
-    const disc   = document.getElementById('disc');
+    const root      = document.documentElement;
+    const cursor    = document.getElementById('custom-cursor');
+    const disc      = document.getElementById('disc');
+    const container = document.getElementById('container');
 
     function getCursorColor() {
         return getComputedStyle(root).getPropertyValue('--cursor-color').trim();
@@ -102,10 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const [prop, val] of Object.entries(s)) {
             root.style.setProperty(prop, val);
         }
-        document.body.style.background = s['--bg'];
-        document.body.style.color      = s['--text'];
+        document.body.style.background  = s['--bg'];
+        document.body.style.color       = s['--text'];
+        container.style.background      = s['--bg'];
         cursor.style.color = getTextColor();
-        disc.style.background = getComputedStyle(root).getPropertyValue('--bg').trim();
     }
 
     // Apply scheme 6 (index 5 — white/black) immediately before anything else
@@ -291,19 +292,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const path = imageMap[word];
         if (!path) return;
 
-        const sizes   = ['28vh', '32vh', '36vh', '40vh', '44vh'];
-        const size    = sizes[Math.floor(Math.random() * sizes.length)];
-        const left    = Math.floor(Math.random() * 55) + 'vw';
-        const top     = Math.floor(Math.random() * 50) + 'vh';
-        const bgColor = getComputedStyle(root).getPropertyValue('--bg').trim();
+        const sizes  = ['28vh', '32vh', '36vh', '40vh', '44vh'];
+        const size   = sizes[Math.floor(Math.random() * sizes.length)];
+        const leftVal = Math.floor(Math.random() * 55) + 'vw';
+        const topVal  = Math.floor(Math.random() * 50) + 'vh';
 
-        disc.style.width      = size;
-        disc.style.height     = size;
-        disc.style.left       = left;
-        disc.style.top        = top;
-        disc.style.background = bgColor;
-        disc.style.opacity    = '0.5';
-        disc.innerHTML        = '';
+        disc.style.width   = size;
+        disc.style.height  = size;
+        disc.style.left    = leftVal;
+        disc.style.top     = topVal;
+        disc.style.opacity = '0.85';
+        disc.innerHTML     = '';
 
         const img = document.createElement('img');
         img.src           = path;
