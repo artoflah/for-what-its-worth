@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         'rgb(255,0,20)',
             '--text-sub':     'rgba(255,0,20,0.5)',
             '--accent':       'rgb(255,0,20)',
+            '--highlight':    'rgb(255,0,20)',
             '--cursor-color': '#0047FF',
             '--tint-opacity': '0.5'
         },
@@ -32,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         'rgb(107,58,56)',
             '--text-sub':     'rgba(107,58,56,0.5)',
             '--accent':       'rgb(107,58,56)',
+            '--highlight':    'rgb(107,58,56)',
             '--cursor-color': '#FFE500',
             '--tint-opacity': '0.5'
         },
@@ -40,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         'rgb(255,246,98)',
             '--text-sub':     'rgba(255,246,98,0.5)',
             '--accent':       'rgb(255,246,98)',
+            '--highlight':    'rgb(255,246,98)',
             '--cursor-color': '#FF3CAC',
             '--tint-opacity': '0.5'
         },
@@ -48,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         'rgb(78,93,97)',
             '--text-sub':     'rgba(78,93,97,0.5)',
             '--accent':       'rgb(78,93,97)',
+            '--highlight':    'rgb(78,93,97)',
             '--cursor-color': '#FF3CAC',
             '--tint-opacity': '0.5'
         },
@@ -56,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         'rgb(255,246,98)',
             '--text-sub':     'rgba(255,246,98,0.5)',
             '--accent':       'rgb(255,246,98)',
+            '--highlight':    'rgb(255,246,98)',
             '--cursor-color': '#ffffff',
             '--tint-opacity': '0.5'
         },
@@ -64,7 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         '#000000',
             '--text-sub':     'rgba(0,0,0,0.5)',
             '--accent':       '#000000',
-            '--cursor-color': '#0047FF',
+            '--highlight':    '#0047FF',
+            '--cursor-color': '#FF3CAC',
             '--tint-opacity': '0.3'
         },
         {
@@ -72,7 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
             '--text':         '#ffffff',
             '--text-sub':     'rgba(255,255,255,0.5)',
             '--accent':       '#ffffff',
-            '--cursor-color': '#FFE500',
+            '--highlight':    '#FFE500',
+            '--cursor-color': '#FF3CAC',
             '--tint-opacity': '0.5'
         }
     ];
@@ -290,22 +297,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const path = imageMap[word];
         if (!path) return;
 
-        const size = (28 + Math.random() * 14).toFixed(1) + 'vh'; // 28–42vh
-        const left = (5  + Math.random() * 50).toFixed(1) + 'vw'; // 5–55vw
-        const top  = (5  + Math.random() * 45).toFixed(1) + 'vh'; // 5–50vh
-        const rot  = (Math.random() * 12 - 6).toFixed(2)  + 'deg';
+        const sizePx = Math.round((28 + Math.random() * 14) / 100 * window.innerHeight);
+        const left   = (5  + Math.random() * 50).toFixed(1) + 'vw'; // 5–55vw
+        const top    = (5  + Math.random() * 45).toFixed(1) + 'vh'; // 5–50vh
+        const bgVal  = getComputedStyle(root).getPropertyValue('--bg').trim();
 
         // Wrapper
         const wrapper = document.createElement('div');
         wrapper.style.cssText =
             `position:absolute;` +
-            `width:${size};` +
+            `width:${sizePx}px;height:${sizePx}px;` +
             `left:${left};top:${top};` +
-            `transform:rotate(${rot});` +
             `overflow:hidden;` +
             `opacity:0;` +
             `transition:opacity 0.6s ease;` +
             `pointer-events:none;`;
+        wrapper.style.background = bgVal;
 
         // Image
         const img = document.createElement('img');
@@ -313,13 +320,12 @@ document.addEventListener('DOMContentLoaded', () => {
         img.style.cssText = `width:100%;height:auto;display:block;`;
         img.onerror       = () => { wrapper.remove(); };
 
-        // Tint layer — var(--bg) and var(--tint-opacity) update automatically with scheme
+        // Tint layer — inherits wrapper background, darkens image with current page color
         const tint = document.createElement('div');
         tint.style.cssText =
             `position:absolute;inset:0;` +
-            `background:var(--bg);` +
+            `background:inherit;` +
             `mix-blend-mode:darken;` +
-            `opacity:var(--tint-opacity);` +
             `pointer-events:none;`;
 
         wrapper.appendChild(img);

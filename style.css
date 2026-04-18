@@ -3,7 +3,8 @@
     --text:         #000000;
     --text-sub:     rgba(0,0,0,0.5);
     --accent:       #000000;
-    --cursor-color: #0047FF;
+    --highlight:    #0047FF;
+    --cursor-color: #FF3CAC;
     --tint-opacity: 0.3;
 }
 
@@ -113,7 +114,7 @@ body {
 }
 
 .swap-word:hover {
-    color: var(--cursor-color);
+    color: var(--highlight);
     opacity: 0.6;
 }
 
