@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const [prop, val] of Object.entries(s)) {
             root.style.setProperty(prop, val);
         }
-        // Clear images on scheme change — clean slate for new color context
         clearImageLayer();
     }
 
@@ -80,54 +79,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const landing = document.getElementById('landing');
     const main    = document.getElementById('main');
+    let landingExited = false;
 
-    landing.addEventListener('click', () => {
-        landing.style.opacity      = '0';
-        main.style.opacity         = '1';
-        main.style.pointerEvents   = 'all';
-        setTimeout(() => {
-            landing.style.display = 'none';
-        }, 800);
+    document.addEventListener('click', () => {
+        if (!landingExited) {
+            landingExited                = true;
+            landing.style.opacity        = '0';
+            landing.style.pointerEvents  = 'none';
+            setTimeout(() => {
+                landing.style.display    = 'none';
+                main.style.opacity       = '1';
+                main.style.pointerEvents = 'all';
+            }, 800);
+        }
     });
 
 
     // ─── Word sets ────────────────────────────────────────────────────────────────
 
     const wordSets = {
-        sacrifice: { words: ['sacrifice', 'love',    'energy',    'time',        'trust',   'comfort'],      index: 0 },
-        receive:   { words: ['receive',   'gain',    'keep',      'hold onto',   'find'],                    index: 0 },
-        precious:  { words: ['precious',  'fragile', 'uncertain', 'irreplaceable','raw'],                    index: 0 },
-        ideas:     { words: ['ideas',     'dreams',  'vulnerabilities', 'beliefs','fears'],                  index: 0 },
-        time:      { words: ['time',      'money',   'youth',     'attention',   'effort'],                  index: 0 },
-        hearts:    { words: ['hearts',    'selves',  'voices',    'hopes',       'futures'],                 index: 0 },
-        lost:      { words: ['lost',      'dismissed','broken',   'misunderstood','forgotten'],              index: 0 },
-        potential: { words: ['potential', 'uncertain','fleeting', 'unnamed',     'new'],                     index: 0 },
-        certainty: { words: ['certainty', 'safety',  'comfort',  'silence',     'stillness'],               index: 0 }
+        certainty: { words: ['certainty',  'guarantees', 'permission',     'safety',       'proof'     ], index: 0 },
+        yourself:  { words: ['yourself',   'the unknown','what scares you', 'the feeling', 'chance'    ], index: 0 },
+        precious:  { words: ['precious',   'fragile',    'irreplaceable',  'uncertain',    'raw'       ], index: 0 },
+        dreams:    { words: ['dreams',     'ideas',      'hopes',          'fears',        'secrets'   ], index: 0 },
+        time:      { words: ['time',       'money',      'energy',         'youth',        'attention' ], index: 0 },
+        heart:     { words: ['heart',      'voice',      'self',           'trust',        'pride'     ], index: 0 },
+        lands:     { words: ['lands',      'falls',      'ends',           'plays out',    'unfolds'   ], index: 0 },
+        risk:      { words: ['risk',       'leap',       'loss',           'bet',          'sacrifice' ], index: 0 },
+        reach:     { words: ['reach',      'try',        'begin',          'choose',       'go'        ], index: 0 }
     };
 
 
     // ─── Build text block ─────────────────────────────────────────────────────────
 
     const segments = [
-        { type: 'text', content: "for what it\u2019s worth is the gap between what we " },
-        { type: 'swap', key:  'sacrifice'  },
-        { type: 'text', content: " and what we might "                                  },
-        { type: 'swap', key:  'receive'    },
-        { type: 'text', content: ". it\u2019s the courage to risk something "           },
-        { type: 'swap', key:  'precious'   },
-        { type: 'text', content: " \u2014 our "                                         },
-        { type: 'swap', key:  'ideas'      },
-        { type: 'text', content: ", our "                                               },
-        { type: 'swap', key:  'time'       },
-        { type: 'text', content: ", our "                                               },
-        { type: 'swap', key:  'hearts'     },
-        { type: 'text', content: " \u2014 knowing full well they might be "            },
-        { type: 'swap', key:  'lost'       },
-        { type: 'text', content: ". it\u2019s choosing "                               },
-        { type: 'swap', key:  'potential'  },
-        { type: 'text', content: " meaning over comfortable "                          },
-        { type: 'swap', key:  'certainty'  },
-        { type: 'text', content: "."                                                    }
+        { type: 'text', content: "luck is what happens when you stop waiting for "    },
+        { type: 'swap', key: 'certainty'                                               },
+        { type: 'text', content: " and start betting on "                              },
+        { type: 'swap', key: 'yourself'                                                },
+        { type: 'text', content: ". it\u2019s tossing everything "                    },
+        { type: 'swap', key: 'precious'                                                },
+        { type: 'text', content: " into the air \u2014 your "                         },
+        { type: 'swap', key: 'dreams'                                                  },
+        { type: 'text', content: ", your "                                             },
+        { type: 'swap', key: 'time'                                                    },
+        { type: 'text', content: ", your "                                             },
+        { type: 'swap', key: 'heart'                                                   },
+        { type: 'text', content: " \u2014 not knowing how it "                        },
+        { type: 'swap', key: 'lands'                                                   },
+        { type: 'text', content: ". for what it\u2019s worth, the "                   },
+        { type: 'swap', key: 'risk'                                                    },
+        { type: 'text', content: " is always worth the "                               },
+        { type: 'swap', key: 'reach'                                                   },
+        { type: 'text', content: "."                                                   }
     ];
 
     const textBlock = document.getElementById('text-block');
@@ -137,9 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
             textBlock.appendChild(document.createTextNode(seg.content));
         } else {
             const span = document.createElement('span');
-            span.className        = 'swap-word';
-            span.textContent      = wordSets[seg.key].words[0];
-            span.dataset.key      = seg.key;
+            span.className   = 'swap-word';
+            span.textContent = wordSets[seg.key].words[0];
+            span.dataset.key = seg.key;
             span.addEventListener('click', (e) => {
                 e.stopPropagation();
                 cycleWord(span, seg.key);
@@ -152,18 +156,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Word cycling ─────────────────────────────────────────────────────────────
 
     function cycleWord(span, key) {
-        const set   = wordSets[key];
-        set.index   = (set.index + 1) % set.words.length;
-        const next  = set.words[set.index];
+        const set  = wordSets[key];
+        set.index  = (set.index + 1) % set.words.length;
+        const next = set.words[set.index];
 
-        // Fade out
-        span.style.opacity    = '0';
-        span.style.transform  = 'scale(1.08)';
+        span.style.opacity   = '0';
+        span.style.transform = 'scale(1.08)';
 
         setTimeout(() => {
-            span.textContent  = next;
-            span.style.opacity    = '1';
-            span.style.transform  = 'scale(1)';
+            span.textContent     = next;
+            span.style.opacity   = '1';
+            span.style.transform = 'scale(1)';
         }, 120);
 
         addImage();
@@ -179,10 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
         allPaths.push(`assets/s${i}_balanced.png`);
     }
 
-    // Start with a shuffled queue
     let queue        = shuffle([...allPaths]);
     let queueIdx     = 0;
-    let visible      = [];   // currently shown img elements
+    let visible      = [];
     const MAX_IMAGES = 8;
 
     const imageLayer = document.getElementById('image-layer');
@@ -196,21 +198,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addImage() {
-        // Reset queue when exhausted
         if (queueIdx >= queue.length) {
             queue    = shuffle([...allPaths]);
             queueIdx = 0;
         }
 
         const path = queue[queueIdx++];
-        const size = Math.round(180 + Math.random() * 100);          // 180–280 px
-        const top  = (5  + Math.random() * 80).toFixed(1) + '%';    // 5–85%
-        const left = (2  + Math.random() * 76).toFixed(1) + '%';    // 2–78%
-        const rot  = (Math.random() * 12 - 6).toFixed(2)  + 'deg'; // -6–6 deg
+        const size = Math.round(180 + Math.random() * 100);
+        const top  = (5  + Math.random() * 80).toFixed(1) + '%';
+        const left = (2  + Math.random() * 76).toFixed(1) + '%';
+        const rot  = (Math.random() * 12 - 6).toFixed(2)  + 'deg';
 
-        const img          = document.createElement('img');
-        img.src            = path;
-        img.style.cssText  =
+        const img         = document.createElement('img');
+        img.src           = path;
+        img.style.cssText =
             `position:absolute;` +
             `width:${size}px;height:auto;` +
             `top:${top};left:${left};` +
@@ -223,16 +224,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         imageLayer.appendChild(img);
 
-        // Double rAF ensures the browser paints at opacity:0 before fading in
         requestAnimationFrame(() => requestAnimationFrame(() => {
             img.style.opacity = '1';
         }));
 
         visible.push(img);
 
-        // Remove oldest when over limit
         if (visible.length > MAX_IMAGES) {
-            const oldest        = visible.shift();
+            const oldest         = visible.shift();
             oldest.style.opacity = '0';
             setTimeout(() => oldest.remove(), 600);
         }
@@ -274,6 +273,5 @@ document.addEventListener('DOMContentLoaded', () => {
     aboutModal.addEventListener('click', (e) => {
         if (e.target === aboutModal) toggleAbout();
     });
-
 
 });
