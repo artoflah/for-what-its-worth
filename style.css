@@ -4,7 +4,7 @@
     --text-sub: rgba(26,26,26,0.45);
     --accent: #1a1a1a;
     --swap-underline: rgba(26,26,26,0.3);
-    --modal-bg: rgba(255,255,255,0.92);
+    --modal-bg: rgba(255,255,255,0.15);
 }
 
 *, *::before, *::after {
@@ -22,7 +22,7 @@ html, body {
 body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Playfair Display', serif;
     cursor: none !important;
     transition: background 0.6s ease, color 0.6s ease;
 }
@@ -73,7 +73,7 @@ body {
     padding: 0 10vw;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.8s ease, background 0.6s ease;
+    transition: opacity 0.8s ease, background 0.6s ease, filter 0.4s ease;
 }
 
 /* ─── Image layer ─────────────────────────────────────────────────────────── */
@@ -105,30 +105,34 @@ body {
 #text-block {
     position: relative;
     z-index: 20;
-    max-width: 780px;
+    max-width: 900px;
     text-align: center;
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: clamp(22px, 3.2vw, 42px);
-    line-height: 1.75;
+    font-size: clamp(26px, 4vw, 52px);
+    line-height: 1.8;
     color: var(--text);
-    font-weight: 300;
+    font-weight: 400;
     transition: color 0.6s ease;
 }
 
 .swap-word {
     font-style: italic;
     display: inline-block;
-    border-bottom: 1.5px solid var(--swap-underline);
+    color: var(--accent);
     cursor: none;
-    padding-bottom: 2px;
-    transition: color 0.2s ease, border-color 0.2s ease, transform 0.3s ease,
-                opacity 0.15s ease;
+    transition: opacity 0.2s ease, transform 0.3s ease, color 0.6s ease;
 }
 
 .swap-word:hover {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
+    opacity: 0.7;
+}
+
+/* ─── Blur when modal open ────────────────────────────────────────────────── */
+
+.blurred {
+    filter: blur(8px);
+    transition: filter 0.4s ease;
 }
 
 /* ─── Bottom bar ──────────────────────────────────────────────────────────── */
@@ -149,9 +153,9 @@ body {
 
 #color-btn,
 #about-btn {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 14px;
+    font-family: 'Playfair Display', serif;
+    font-style: normal;
+    font-size: 15px;
     color: var(--text-sub);
     background: transparent;
     border: none;
@@ -166,10 +170,9 @@ body {
 }
 
 #bottom-title {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
+    font-family: 'Playfair Display', serif;
+    font-style: normal;
+    font-size: 15px;
     color: var(--text-sub);
     transition: color 0.6s ease;
 }
@@ -179,9 +182,9 @@ body {
 #about-modal {
     position: fixed;
     inset: 0;
-    background: var(--modal-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
     z-index: 100;
     display: flex;
     align-items: center;
@@ -202,9 +205,9 @@ body {
     max-width: 88vw;
     max-height: 80vh;
     overflow-y: auto;
-    background: transparent;
+    background: var(--bg);
     border-top: 0.5px solid var(--text-sub);
-    padding: 2rem 0 2rem 0;
+    padding: 2rem 2rem 2rem 2rem;
 }
 
 #about-content::-webkit-scrollbar {
@@ -214,11 +217,10 @@ body {
 #about-close {
     position: absolute;
     top: 2rem;
-    right: 0;
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
+    right: 2rem;
+    font-family: 'Playfair Display', serif;
+    font-style: normal;
+    font-size: 13px;
     color: var(--text-sub);
     background: transparent;
     border: none;
@@ -232,43 +234,40 @@ body {
 }
 
 #about-content h2 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: clamp(13px, 1.4vw, 16px);
-    letter-spacing: 0.05em;
+    font-size: clamp(14px, 1.5vw, 18px);
     color: var(--text-sub);
     font-weight: 400;
     margin-bottom: 2rem;
 }
 
 #about-content h3 {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 9px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
+    font-family: 'Playfair Display', serif;
+    font-style: normal;
+    font-size: 12px;
     color: var(--text-sub);
-    font-weight: 300;
+    font-weight: 400;
     margin-top: 2.5rem;
     margin-bottom: 1rem;
 }
 
 #about-content h4 {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    font-family: 'Playfair Display', serif;
+    font-style: normal;
+    font-size: 12px;
     color: var(--text-sub);
-    font-weight: 300;
+    font-weight: 400;
     margin-top: 2.5rem;
 }
 
 #about-content p {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-style: italic;
     font-size: clamp(15px, 1.6vw, 19px);
     line-height: 1.8;
     color: var(--text);
-    font-weight: 300;
+    font-weight: 400;
     margin-bottom: 1.5rem;
 }
 
@@ -287,7 +286,7 @@ body {
     left: 0;
     pointer-events: none;
     z-index: 999999;
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-style: italic;
     font-size: 13px;
     color: var(--text);

@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
         imageLayer.appendChild(img);
 
         requestAnimationFrame(() => requestAnimationFrame(() => {
-            img.style.opacity = '1';
+            img.style.opacity = '0.85';
         }));
 
         visible.push(img);
@@ -266,7 +266,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const aboutClose = document.getElementById('about-close');
 
     function toggleAbout() {
+        const opening = !aboutModal.classList.contains('visible');
         aboutModal.classList.toggle('visible');
+        main.classList.toggle('blurred', opening);
+        landing.classList.toggle('blurred', opening);
     }
 
     aboutBtn.addEventListener('click',   toggleAbout);
