@@ -143,11 +143,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentScenarioIndex = 0;
     let currentWeights       = { left: 0, right: 0 };
-    let resultShown          = false;
 
     // Drag state
     let isDragging      = false;
-    let draggedElement  = null;
+    let draggedElement  = null; // clone — the visual ghost
+    let dragOrigin      = null; // original chip in stage
     let activeSacrifPan = null;
     let activeGainPan   = null;
 
@@ -161,13 +161,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function buildScenario(index) {
         currentScenarioIndex = index;
         currentWeights       = { left: 0, right: 0 };
-        resultShown          = false;
 
-        const stage    = getStage();
+        const stage = getStage();
         stage.innerHTML = '';
-
-        // Clear any flex layout from final state
-        stage.style.cssText = '';
+        // Reset only layout properties — preserve opacity/transition set by advanceScenario
+        stage.style.display        = '';
+        stage.style.flexDirection  = '';
+        stage.style.justifyContent = '';
+        stage.style.alignItems     = '';
+        stage.style.textAlign      = '';
+        stage.style.padding        = '';
 
         const scenario = scenarios[index];
         const n        = index + 1;
@@ -210,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
             img.alt           = '';
             img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
             img.onerror = () => {
-                frag.style.background = '#d4cfc4';
+                frag.style.background = 'rgba(28,21,16,0.06)';
                 frag.style.border     = '0.5px solid rgba(28,21,16,0.1)';
                 img.style.display     = 'none';
             };
@@ -300,6 +303,25 @@ document.addEventListener('DOMContentLoaded', () => {
             stage.appendChild(chip);
         });
 
+        // Commit button — hidden until both pans have at least 1 chip
+        const commitBtn = document.createElement('button');
+        commitBtn.id          = 'commit-btn';
+        commitBtn.textContent = 'is this worth it to you?';
+        commitBtn.style.cssText =
+            'position:absolute;bottom:80px;left:50%;transform:translateX(-50%);z-index:20;' +
+            'font-family:"Cormorant Garamond",serif;font-style:italic;' +
+            'font-size:clamp(13px,1.4vw,17px);color:var(--text-primary);' +
+            'background:transparent;border:0.5px solid var(--border-mid);' +
+            'padding:10px 28px;border-radius:0;cursor:pointer;' +
+            'opacity:0;transition:opacity 0.5s ease;pointer-events:none;' +
+            'white-space:nowrap;';
+        commitBtn.addEventListener('click', () => {
+            commitBtn.style.opacity      = '0';
+            commitBtn.style.pointerEvents = 'none';
+            showResult(index);
+        });
+        stage.appendChild(commitBtn);
+
         // Bottom labels
         const lblLeft = document.createElement('div');
         lblLeft.className   = 'sg-bottom-label sg-bottom-left';
@@ -325,118 +347,121 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // ─── Result reveal ────────────────────────────────────────────────────────────
+    // ─── Commit button visibility ─────────────────────────────────────────────────
 
-    function checkForResult() {
-        if (resultShown) return;
+    function checkCommitBtn() {
         const stage = getStage();
-        let total = 0;
-        stage.querySelectorAll('.sg-pan').forEach(p => {
-            total += p.querySelectorAll('.sg-chip-dropped').length;
-        });
-        if (total >= 3) {
-            resultShown = true;
-            setTimeout(() => showResult(currentScenarioIndex), 800);
+        const pans  = stage.querySelectorAll('.sg-pan');
+        if (pans.length < 2) return;
+        const leftHas  = pans[0].querySelectorAll('.sg-chip-dropped').length > 0;
+        const rightHas = pans[1].querySelectorAll('.sg-chip-dropped').length > 0;
+        const btn = document.getElementById('commit-btn');
+        if (!btn) return;
+        if (leftHas && rightHas) {
+            btn.style.opacity      = '1';
+            btn.style.pointerEvents = 'all';
+        } else {
+            btn.style.opacity      = '0';
+            btn.style.pointerEvents = 'none';
         }
     }
 
+
+    // ─── Result drawer ────────────────────────────────────────────────────────────
+
     function showResult(index) {
+        const existing = document.getElementById('result-drawer');
+        if (existing) existing.remove();
+
         const stage    = getStage();
         const scenario = scenarios[index];
         const n        = index + 1;
         const w        = currentWeights;
 
         let resultKey = 'balanced';
-        if (w.left  > w.right + 2) resultKey = 'notWorth';
+        if (w.left  > w.right + 2)  resultKey = 'notWorth';
         else if (w.right > w.left + 2) resultKey = 'worth';
 
         const verdictMap = {
-            worth:    'worth it.',
-            notWorth: 'not worth it.',
-            balanced: 'balanced.'
+            worth:    'WORTH IT.',
+            notWorth: 'NOT WORTH IT.',
+            balanced: 'BALANCED.'
         };
 
-        // 1. Fade out image fragments
-        stage.querySelectorAll('.img-fragment').forEach(frag => {
-            frag.style.transition = 'opacity 0.6s ease';
-            frag.style.opacity    = '0';
-        });
+        // Dim stage behind drawer
+        stage.style.transition = 'opacity 0.5s ease';
+        stage.style.opacity    = '0.4';
 
-        // 2. Full-bleed result background
-        const resultBg = document.createElement('div');
-        resultBg.className    = 'sg-result-bg';
-        resultBg.style.cssText =
-            'position:absolute;inset:0;z-index:6;opacity:0;transition:opacity 0.8s ease;';
+        // Build drawer
+        const drawer = document.createElement('div');
+        drawer.id = 'result-drawer';
+        drawer.style.cssText =
+            'position:fixed;bottom:0;left:0;right:0;height:55vh;' +
+            'background:#1c1510;z-index:50;' +
+            'transform:translateY(100%);' +
+            'transition:transform 0.7s cubic-bezier(0.16,1,0.3,1);' +
+            'padding:40px 10vw;display:flex;flex-direction:column;' +
+            'align-items:center;justify-content:center;gap:16px;' +
+            'box-sizing:border-box;';
 
-        const bgImg = document.createElement('img');
-        bgImg.src           = `assets/s${n}_${resultKey}.png`;
-        bgImg.alt           = '';
-        bgImg.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center;display:block;';
-        bgImg.onerror = () => { resultBg.style.background = '#1c1510'; };
-        resultBg.appendChild(bgImg);
-
-        const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:absolute;inset:0;z-index:7;background:rgba(13,13,13,0.55);';
-        resultBg.appendChild(overlay);
-
-        stage.appendChild(resultBg);
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-            resultBg.style.opacity = '1';
-        }));
-
-        // 3. Result bar with verdict, description, next button
-        const resultBar = document.createElement('div');
-        resultBar.className    = 'sg-result-bar';
-        resultBar.style.cssText =
-            'position:absolute;bottom:60px;left:50%;transform:translateX(-50%);' +
-            'width:auto;max-width:600px;text-align:center;z-index:20;' +
-            'opacity:0;transition:opacity 0.8s ease;';
-
+        // Verdict
         const verdictEl = document.createElement('div');
-        verdictEl.className   = 'sg-result-verdict';
+        verdictEl.style.cssText =
+            'font-family:"Bebas Neue",sans-serif;font-size:clamp(36px,5vw,56px);' +
+            'color:#e8e3d8;letter-spacing:0.05em;line-height:1;';
         verdictEl.textContent = verdictMap[resultKey];
 
+        // Description
         const descEl = document.createElement('div');
-        descEl.className   = 'sg-result-desc';
+        descEl.style.cssText =
+            'font-family:"Cormorant Garamond",serif;font-style:italic;' +
+            'font-size:clamp(13px,1.5vw,17px);color:rgba(232,227,216,0.65);' +
+            'max-width:480px;text-align:center;line-height:1.6;';
         descEl.textContent = scenario.result[resultKey];
 
+        // Result image
+        const resultImg = document.createElement('img');
+        resultImg.src           = `assets/s${n}_${resultKey}.png`;
+        resultImg.alt           = '';
+        resultImg.style.cssText = 'max-width:180px;height:auto;object-fit:cover;display:block;margin:0 auto;';
+        resultImg.onerror = () => { resultImg.style.display = 'none'; };
+
+        // Next button
         const isLast  = index >= scenarios.length - 1;
         const nextBtn = document.createElement('button');
-        nextBtn.textContent = isLast ? 'finish →' : 'next →';
         nextBtn.style.cssText =
-            'font-family:"Inter Tight",sans-serif;font-size:10px;letter-spacing:0.2em;' +
-            'text-transform:uppercase;background:transparent;' +
-            'border:0.5px solid rgba(232,227,216,0.4);color:rgba(232,227,216,0.7);' +
-            'padding:8px 20px;cursor:pointer;margin-top:1.5rem;' +
-            'display:block;margin-left:auto;margin-right:auto;' +
-            'transition:color 0.2s ease,border-color 0.2s ease;';
+            'font-family:"Inter Tight",sans-serif;font-size:10px;letter-spacing:0.22em;' +
+            'text-transform:uppercase;color:rgba(232,227,216,0.5);background:transparent;' +
+            'border:0.5px solid rgba(232,227,216,0.2);padding:8px 20px;border-radius:0;' +
+            'cursor:pointer;margin-top:8px;transition:color 0.2s ease,border-color 0.2s ease;';
+        nextBtn.textContent = isLast ? 'that\'s a wrap.' : 'next scenario →';
         nextBtn.addEventListener('mouseenter', () => {
-            nextBtn.style.color       = 'rgba(232,227,216,1)';
-            nextBtn.style.borderColor = 'rgba(232,227,216,0.8)';
+            nextBtn.style.color       = 'rgba(232,227,216,0.9)';
+            nextBtn.style.borderColor = 'rgba(232,227,216,0.5)';
         });
         nextBtn.addEventListener('mouseleave', () => {
-            nextBtn.style.color       = 'rgba(232,227,216,0.7)';
-            nextBtn.style.borderColor = 'rgba(232,227,216,0.4)';
+            nextBtn.style.color       = 'rgba(232,227,216,0.5)';
+            nextBtn.style.borderColor = 'rgba(232,227,216,0.2)';
+        });
+        nextBtn.addEventListener('click', () => {
+            drawer.style.transform  = 'translateY(100%)';
+            stage.style.opacity     = '1';
+            setTimeout(() => {
+                drawer.remove();
+                advanceScenario(index);
+            }, 400);
         });
 
-        resultBar.appendChild(verdictEl);
-        resultBar.appendChild(descEl);
-        resultBar.appendChild(nextBtn);
-        stage.appendChild(resultBar);
+        drawer.appendChild(verdictEl);
+        drawer.appendChild(descEl);
+        drawer.appendChild(resultImg);
+        drawer.appendChild(nextBtn);
+        document.body.appendChild(drawer);
 
+        // Slide up
         requestAnimationFrame(() => requestAnimationFrame(() => {
-            resultBar.style.opacity = '1';
+            drawer.style.transform = 'translateY(0)';
         }));
-
-        // 4. Advance on click or after 2s
-        let advanced = false;
-        const doAdvance = () => {
-            if (advanced) return;
-            advanced = true;
-            advanceScenario(index);
-        };
-        nextBtn.addEventListener('click', doAdvance);
-        setTimeout(doAdvance, 2000);
     }
 
 
@@ -454,7 +479,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 showFinalState();
             }
             requestAnimationFrame(() => {
-                stage.style.opacity = '1';
+                stage.style.transition = 'opacity 0.5s ease';
+                stage.style.opacity    = '1';
             });
         }, 500);
     }
@@ -464,18 +490,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showFinalState() {
         const stage = getStage();
-        stage.innerHTML   = '';
-        stage.style.cssText =
-            'position:fixed;inset:0;width:100vw;height:100vh;background:#e8e3d8;' +
-            'overflow:hidden;z-index:10;display:flex;flex-direction:column;' +
-            'justify-content:center;align-items:center;text-align:center;padding:0 10vw;' +
-            'opacity:1;transition:opacity 0.5s ease;';
+        stage.innerHTML       = '';
+        stage.style.display        = 'flex';
+        stage.style.flexDirection  = 'column';
+        stage.style.justifyContent = 'center';
+        stage.style.alignItems     = 'center';
+        stage.style.textAlign      = 'center';
+        stage.style.padding        = '0 10vw';
 
         const mainText = document.createElement('div');
         mainText.style.cssText =
             'font-family:"Cormorant Garamond",serif;font-style:italic;' +
             'font-size:clamp(36px,5vw,56px);color:var(--text-primary);line-height:1.1;';
-        mainText.textContent = 'for what it\'s worth,';
+        mainText.textContent = 'for what it\u2019s worth,';
 
         const subText = document.createElement('div');
         subText.style.cssText =
@@ -516,30 +543,35 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.userSelect       = 'none';
         document.body.style.webkitUserSelect = 'none';
 
-        isDragging     = true;
-        draggedElement = this;
+        isDragging = true;
+        dragOrigin = this;
+
+        const rect    = this.getBoundingClientRect();
+        const clientX = e.clientX ?? e.touches[0].clientX;
+        const clientY = e.clientY ?? e.touches[0].clientY;
+
+        // Create a fixed-position clone as the drag ghost
+        draggedElement = this.cloneNode(true);
         draggedElement.classList.add('dragging');
+        draggedElement.style.position      = 'fixed';
+        draggedElement.style.zIndex        = '999';
+        draggedElement.style.pointerEvents = 'none';
+        draggedElement.style.width         = rect.width + 'px';
+        draggedElement.style.margin        = '0';
+        draggedElement.setAttribute('data-offset-x', clientX - rect.left);
+        draggedElement.setAttribute('data-offset-y', clientY - rect.top);
+        document.body.appendChild(draggedElement);
+
+        // Hide original in place
+        this.style.opacity       = '0';
+        this.style.pointerEvents = 'none';
 
         const stage = getStage();
         const pans  = stage.querySelectorAll('.sg-pan');
         activeSacrifPan = pans[0];
         activeGainPan   = pans[1];
 
-        const rect    = draggedElement.getBoundingClientRect();
-        const clientX = e.clientX ?? e.touches[0].clientX;
-        const clientY = e.clientY ?? e.touches[0].clientY;
-
-        draggedElement.setAttribute('data-offset-x', clientX - rect.left);
-        draggedElement.setAttribute('data-offset-y', clientY - rect.top);
-
-        draggedElement.dataset.origTop   = draggedElement.style.top   || '';
-        draggedElement.dataset.origLeft  = draggedElement.style.left  || '';
-        draggedElement.dataset.origRight = draggedElement.style.right || '';
-        draggedElement.style.position    = 'fixed';
-        draggedElement.style.zIndex      = '1000';
-
         moveAt(clientX, clientY);
-        document.body.appendChild(draggedElement);
     }
 
     function moveAt(clientX, clientY) {
@@ -580,51 +612,51 @@ document.addEventListener('DOMContentLoaded', () => {
         const x = e.clientX ?? (e.changedTouches && e.changedTouches[0].clientX);
         const y = e.clientY ?? (e.changedTouches && e.changedTouches[0].clientY);
 
-        draggedElement.classList.remove('dragging');
         if (activeSacrifPan) activeSacrifPan.style.borderColor = '';
         if (activeGainPan)   activeGainPan.style.borderColor   = '';
 
-        const sr    = activeSacrifPan ? activeSacrifPan.getBoundingClientRect() : null;
-        const gr    = activeGainPan   ? activeGainPan.getBoundingClientRect()   : null;
-        const stage = getStage();
+        // Remove the clone ghost
+        draggedElement.remove();
+        draggedElement = null;
+
+        const sr = activeSacrifPan ? activeSacrifPan.getBoundingClientRect() : null;
+        const gr = activeGainPan   ? activeGainPan.getBoundingClientRect()   : null;
 
         if (sr && x >= sr.left && x <= sr.right && y >= sr.top && y <= sr.bottom) {
             placeOnPan(activeSacrifPan, 'left');
         } else if (gr && x >= gr.left && x <= gr.right && y >= gr.top && y <= gr.bottom) {
             placeOnPan(activeGainPan, 'right');
         } else {
-            returnChip(stage);
+            returnChip();
         }
 
         activeSacrifPan = null;
         activeGainPan   = null;
         isDragging      = false;
-        draggedElement  = null;
+        dragOrigin      = null;
     }
 
     function placeOnPan(panEl, side) {
         const chip = document.createElement('div');
-        chip.className = 'sg-chip sg-chip-dropped';
-        chip.textContent = draggedElement.textContent;
-        chip.setAttribute('data-weight', draggedElement.getAttribute('data-weight'));
+        chip.className   = 'sg-chip sg-chip-dropped';
+        chip.textContent = dragOrigin.textContent;
+        chip.setAttribute('data-weight', dragOrigin.getAttribute('data-weight'));
         panEl.appendChild(chip);
 
-        const weight = parseInt(draggedElement.getAttribute('data-weight'));
+        const weight = parseInt(dragOrigin.getAttribute('data-weight'));
         if (side === 'left') currentWeights.left  += weight;
         else                 currentWeights.right += weight;
 
-        draggedElement.remove();
+        // Remove the original from the stage palette
+        dragOrigin.remove();
         updateTilt();
-        checkForResult();
+        checkCommitBtn();
     }
 
-    function returnChip(stage) {
-        draggedElement.style.position = 'absolute';
-        draggedElement.style.top      = draggedElement.dataset.origTop   || '';
-        draggedElement.style.left     = draggedElement.dataset.origLeft  || '';
-        draggedElement.style.right    = draggedElement.dataset.origRight || '';
-        draggedElement.style.zIndex   = '5';
-        stage.appendChild(draggedElement);
+    function returnChip() {
+        // Original never moved — just restore its visibility
+        dragOrigin.style.opacity       = '1';
+        dragOrigin.style.pointerEvents = 'auto';
     }
 
 
