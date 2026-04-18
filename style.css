@@ -109,8 +109,7 @@ body {
     text-align: center;
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: clamp(26px, 4vw, 52px);
-    line-height: 1.8;
+    font-size: clamp(26px, 2vw, 52px);
     color: var(--text);
     font-weight: 400;
     transition: color 0.6s ease;
@@ -121,11 +120,11 @@ body {
     display: inline-block;
     color: var(--accent);
     cursor: none;
-    transition: opacity 0.2s ease, transform 0.3s ease, color 0.6s ease;
+    transition: color 0.2s ease;
 }
 
 .swap-word:hover {
-    opacity: 0.7;
+    color: var(--text);
 }
 
 /* ─── Blur when modal open ────────────────────────────────────────────────── */

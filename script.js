@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const landing = document.getElementById('landing');
     const main    = document.getElementById('main');
+    const cursor  = document.getElementById('custom-cursor');
     let landingExited = false;
 
     document.addEventListener('click', () => {
@@ -142,6 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
             span.className   = 'swap-word';
             span.textContent = wordSets[seg.key].words[0];
             span.dataset.key = seg.key;
+            span.addEventListener('mouseenter', () => {
+                cursor.textContent  = 'click';
+                cursor.style.fontStyle = 'italic';
+            });
+            span.addEventListener('mouseleave', () => {
+                cursor.textContent  = 'try your luck';
+            });
             span.addEventListener('click', (e) => {
                 e.stopPropagation();
                 cycleWord(span, seg.key);
@@ -166,6 +174,12 @@ document.addEventListener('DOMContentLoaded', () => {
             span.style.opacity   = '1';
             span.style.transform = 'scale(1)';
         }, 120);
+
+        // Cursor echoes the new word, then reverts
+        cursor.textContent = next;
+        setTimeout(() => {
+            cursor.textContent = 'try your luck';
+        }, 600);
 
         addImage();
     }
