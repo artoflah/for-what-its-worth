@@ -218,7 +218,7 @@ body {
     padding: 10vh 12vw;
     background: transparent;
     position: relative;
-    z-index: 10;
+    z-index: 25;
 }
 
 .reveal-line {

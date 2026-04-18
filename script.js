@@ -20,44 +20,73 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── Logo fade-in and scroll shrink ──────────────────────────────────────────
 
-    const heroLogo = document.getElementById('hero-logo');
+    const heroLogo       = document.getElementById('hero-logo');
+    let logoFadeDone     = false;
+    let logoRafPending   = false;
+    let logoLocked       = false;
 
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    // Cinematic fade-in
     setTimeout(() => {
-        heroLogo.style.transition = 'opacity 2s ease';
+        heroLogo.style.transition = 'opacity 2.5s ease';
         heroLogo.style.opacity    = '1';
-    }, 300);
+    }, 200);
     setTimeout(() => {
         heroLogo.style.transition = '';
-    }, 2400);
+        logoFadeDone = true;
+    }, 2800);
+
+    function applyLogoScroll() {
+        logoRafPending = false;
+        if (!logoFadeDone || logoLocked) return;
+
+        const progress = Math.min(
+            window.scrollY / (window.innerHeight * 0.7),
+            1
+        );
+
+        if (progress >= 1) {
+            logoLocked               = true;
+            heroLogo.style.top       = '14px';
+            heroLogo.style.left      = '16px';
+            heroLogo.style.width     = '130px';
+            heroLogo.style.height    = 'auto';
+            heroLogo.style.objectFit = 'contain';
+            heroLogo.style.opacity   = '0.75';
+            return;
+        }
+
+        const vw = window.innerWidth  / 100;
+        const vh = window.innerHeight / 100;
+
+        const top     = lerp(-8 * vh,           14,   progress);
+        const left    = lerp(-8 * vw,           16,   progress);
+        const width   = lerp(116 * vw,          130,  progress);
+        const opacity = lerp(1,                 0.75, progress);
+
+        heroLogo.style.top       = top    + 'px';
+        heroLogo.style.left      = left   + 'px';
+        heroLogo.style.width     = width  + 'px';
+        heroLogo.style.opacity   = String(opacity);
+
+        // Switch from cover to contain once it starts shrinking noticeably
+        if (progress < 0.08) {
+            heroLogo.style.height    = '116vh';
+            heroLogo.style.objectFit = 'cover';
+        } else {
+            heroLogo.style.height    = 'auto';
+            heroLogo.style.objectFit = 'contain';
+        }
+    }
 
     window.addEventListener('scroll', () => {
-        const progress = Math.min(window.scrollY / window.innerHeight, 1);
-
-        if (progress < 1) {
-            const bleedW  = window.innerWidth  * 1.1;
-            const cornerW = 160;
-            const currentW = bleedW - (progress * (bleedW - cornerW));
-
-            const startTop  = window.innerHeight * -0.05;
-            const startLeft = window.innerWidth  * -0.05;
-            const currentTop  = startTop  + (progress * (16 - startTop));
-            const currentLeft = startLeft + (progress * (18 - startLeft));
-
-            heroLogo.style.transition = 'none';
-            heroLogo.style.width      = currentW + 'px';
-            heroLogo.style.height     = progress < 0.05 ? '110vh' : 'auto';
-            heroLogo.style.objectFit  = progress < 0.05 ? 'cover' : 'contain';
-            heroLogo.style.top        = currentTop  + 'px';
-            heroLogo.style.left       = currentLeft + 'px';
-            heroLogo.style.opacity    = String(1 - progress * 0.15);
-        } else {
-            heroLogo.style.transition = 'none';
-            heroLogo.style.width      = '160px';
-            heroLogo.style.height     = 'auto';
-            heroLogo.style.objectFit  = 'contain';
-            heroLogo.style.top        = '16px';
-            heroLogo.style.left       = '18px';
-            heroLogo.style.opacity    = '0.85';
+        if (logoLocked) return;
+        // Reset lock if user scrolls back to top
+        if (window.scrollY === 0) logoLocked = false;
+        if (!logoRafPending) {
+            logoRafPending = true;
+            requestAnimationFrame(applyLogoScroll);
         }
     }, { passive: true });
 
