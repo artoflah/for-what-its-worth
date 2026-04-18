@@ -20,55 +20,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const schemes = [
         {
-            '--bg':            '#ffffff',
-            '--text':          '#1a1a1a',
-            '--text-sub':      'rgba(26,26,26,0.45)',
-            '--accent':        '#1a1a1a',
-            '--swap-underline':'rgba(26,26,26,0.3)',
-            '--modal-bg':      'rgba(255,255,255,0.92)'
+            '--bg':           '#FF69B4',
+            '--text':         '#ffffff',
+            '--text-sub':     'rgba(255,255,255,0.5)',
+            '--accent':       '#ffffff',
+            '--cursor-color': '#FFE500'
         },
         {
-            '--bg':            '#f7e9f0',
-            '--text':          '#1a1a1a',
-            '--text-sub':      'rgba(26,26,26,0.45)',
-            '--accent':        '#e8437a',
-            '--swap-underline':'rgba(232,67,122,0.4)',
-            '--modal-bg':      'rgba(247,233,240,0.92)'
+            '--bg':           '#0047FF',
+            '--text':         '#ffffff',
+            '--text-sub':     'rgba(255,255,255,0.5)',
+            '--accent':       '#ffffff',
+            '--cursor-color': '#FF3CAC'
         },
         {
-            '--bg':            '#fffbe6',
-            '--text':          '#1a2744',
-            '--text-sub':      'rgba(26,39,68,0.45)',
-            '--accent':        '#1a2744',
-            '--swap-underline':'rgba(26,39,68,0.3)',
-            '--modal-bg':      'rgba(255,251,230,0.92)'
+            '--bg':           '#39FF14',
+            '--text':         '#0a0a0a',
+            '--text-sub':     'rgba(10,10,10,0.5)',
+            '--accent':       '#0a0a0a',
+            '--cursor-color': '#FF0066'
         },
         {
-            '--bg':            '#e8f4fd',
-            '--text':          '#c84b00',
-            '--text-sub':      'rgba(200,75,0,0.45)',
-            '--accent':        '#c84b00',
-            '--swap-underline':'rgba(200,75,0,0.3)',
-            '--modal-bg':      'rgba(232,244,253,0.92)'
+            '--bg':           '#C8A4D4',
+            '--text':         '#ffffff',
+            '--text-sub':     'rgba(255,255,255,0.5)',
+            '--accent':       '#ffffff',
+            '--cursor-color': '#FFE500'
         },
         {
-            '--bg':            '#1a1a1a',
-            '--text':          '#f5f0e8',
-            '--text-sub':      'rgba(245,240,232,0.45)',
-            '--accent':        '#f5f0e8',
-            '--swap-underline':'rgba(245,240,232,0.3)',
-            '--modal-bg':      'rgba(26,26,26,0.92)'
+            '--bg':           '#7D9B76',
+            '--text':         '#ffffff',
+            '--text-sub':     'rgba(255,255,255,0.5)',
+            '--accent':       '#ffffff',
+            '--cursor-color': '#FFE500'
+        },
+        {
+            '--bg':           '#FFE156',
+            '--text':         '#1a1a1a',
+            '--text-sub':     'rgba(26,26,26,0.5)',
+            '--accent':       '#1a1a1a',
+            '--cursor-color': '#FF3CAC'
         }
     ];
 
     let schemeIndex = 0;
-    const root = document.documentElement;
+    const root   = document.documentElement;
+    const cursor = document.getElementById('custom-cursor');
+
+    function getCursorColor() {
+        return getComputedStyle(root).getPropertyValue('--cursor-color').trim();
+    }
 
     function applyScheme(idx) {
         const s = schemes[idx];
         for (const [prop, val] of Object.entries(s)) {
             root.style.setProperty(prop, val);
         }
+        // Update cursor color to match new scheme
+        cursor.style.color = getCursorColor();
         clearImageLayer();
     }
 
@@ -77,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const landing = document.getElementById('landing');
     const main    = document.getElementById('main');
-    const cursor  = document.getElementById('custom-cursor');
     let landingExited = false;
 
     document.addEventListener('click', () => {
@@ -97,15 +105,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Word sets ────────────────────────────────────────────────────────────────
 
     const wordSets = {
-        certainty: { words: ['certainty',  'guarantees', 'permission',     'safety',       'proof'     ], index: 0 },
-        yourself:  { words: ['yourself',   'the unknown','what scares you', 'the feeling', 'chance'    ], index: 0 },
-        precious:  { words: ['precious',   'fragile',    'irreplaceable',  'uncertain',    'raw'       ], index: 0 },
-        dreams:    { words: ['dreams',     'ideas',      'hopes',          'fears',        'secrets'   ], index: 0 },
-        time:      { words: ['time',       'money',      'energy',         'youth',        'attention' ], index: 0 },
-        heart:     { words: ['heart',      'voice',      'self',           'trust',        'pride'     ], index: 0 },
-        lands:     { words: ['lands',      'falls',      'ends',           'plays out',    'unfolds'   ], index: 0 },
-        risk:      { words: ['risk',       'leap',       'loss',           'bet',          'sacrifice' ], index: 0 },
-        reach:     { words: ['reach',      'try',        'begin',          'choose',       'go'        ], index: 0 }
+        certainty: { words: ['certainty',  'guarantees', 'permission',      'safety',       'proof'     ], index: 0 },
+        yourself:  { words: ['yourself',   'the unknown','what scares you', 'the feeling',  'chance'    ], index: 0 },
+        precious:  { words: ['precious',   'fragile',    'irreplaceable',   'uncertain',    'raw'       ], index: 0 },
+        dreams:    { words: ['dreams',     'ideas',      'hopes',           'fears',        'secrets'   ], index: 0 },
+        time:      { words: ['time',       'money',      'energy',          'youth',        'attention' ], index: 0 },
+        heart:     { words: ['heart',      'voice',      'self',            'trust',        'pride'     ], index: 0 },
+        lands:     { words: ['lands',      'falls',      'ends',            'plays out',    'unfolds'   ], index: 0 },
+        risk:      { words: ['risk',       'leap',       'loss',            'bet',          'sacrifice' ], index: 0 },
+        reach:     { words: ['reach',      'try',        'begin',           'choose',       'go'        ], index: 0 }
     };
 
 
@@ -144,11 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
             span.textContent = wordSets[seg.key].words[0];
             span.dataset.key = seg.key;
             span.addEventListener('mouseenter', () => {
-                cursor.textContent  = 'click';
-                cursor.style.fontStyle = 'italic';
+                cursor.textContent = 'click';
+                cursor.style.color = getCursorColor();
             });
             span.addEventListener('mouseleave', () => {
-                cursor.textContent  = 'try your luck';
+                cursor.textContent = 'try your luck';
+                cursor.style.color = getCursorColor();
             });
             span.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -177,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Cursor echoes the new word, then reverts
         cursor.textContent = next;
+        cursor.style.color = getCursorColor();
         setTimeout(() => {
             cursor.textContent = 'try your luck';
         }, 600);
@@ -199,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let visible      = [];
     const MAX_IMAGES = 8;
 
-    // Now safe to call — clearImageLayer() depends on `visible` being declared
+    // Safe to call now — visible is declared above
     applyScheme(0);
 
     const imageLayer = document.getElementById('image-layer');
@@ -218,11 +228,12 @@ document.addEventListener('DOMContentLoaded', () => {
             queueIdx = 0;
         }
 
-        const path = queue[queueIdx++];
-        const size = Math.round(180 + Math.random() * 100);
-        const top  = (5  + Math.random() * 80).toFixed(1) + '%';
-        const left = (2  + Math.random() * 76).toFixed(1) + '%';
-        const rot  = (Math.random() * 12 - 6).toFixed(2)  + 'deg';
+        const path  = queue[queueIdx++];
+        const sizes = [160, 220, 280, 360, 440, 520];
+        const size  = sizes[Math.floor(Math.random() * sizes.length)];
+        const top   = (2  + Math.random() * 73).toFixed(1) + '%';   // 2–75%
+        const left  = (2  + Math.random() * 66).toFixed(1) + '%';   // 2–68%
+        const rot   = (Math.random() * 12 - 6).toFixed(2)  + 'deg'; // -6–6 deg
 
         const img         = document.createElement('img');
         img.src           = path;

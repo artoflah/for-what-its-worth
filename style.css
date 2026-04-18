@@ -1,10 +1,9 @@
 :root {
-    --bg: #ffffff;
-    --text: #1a1a1a;
-    --text-sub: rgba(26,26,26,0.45);
-    --accent: #1a1a1a;
-    --swap-underline: rgba(26,26,26,0.3);
-    --modal-bg: rgba(255,255,255,0.15);
+    --bg:           #FF69B4;
+    --text:         #ffffff;
+    --text-sub:     rgba(255,255,255,0.5);
+    --accent:       #ffffff;
+    --cursor-color: #FFE500;
 }
 
 *, *::before, *::after {
@@ -124,13 +123,13 @@ body {
 }
 
 .swap-word:hover {
-    color: var(--text);
+    color: var(--cursor-color);
 }
 
 /* ─── Blur when modal open ────────────────────────────────────────────────── */
 
 .blurred {
-    filter: blur(8px);
+    filter: blur(12px);
     transition: filter 0.4s ease;
 }
 
@@ -181,13 +180,13 @@ body {
 #about-modal {
     position: fixed;
     inset: 0;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(0px);
-    -webkit-backdrop-filter: blur(0px);
     z-index: 100;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 0 12vw;
+    background: transparent;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s ease;
@@ -200,13 +199,10 @@ body {
 
 #about-content {
     position: relative;
-    width: 520px;
-    max-width: 88vw;
+    width: 100%;
     max-height: 80vh;
     overflow-y: auto;
-    background: var(--bg);
-    border-top: 0.5px solid var(--text-sub);
-    padding: 2rem 2rem 2rem 2rem;
+    text-align: center;
 }
 
 #about-content::-webkit-scrollbar {
@@ -214,59 +210,70 @@ body {
 }
 
 #about-close {
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
+    position: fixed;
+    top: 32px;
+    right: 36px;
     font-family: 'Playfair Display', serif;
-    font-style: normal;
-    font-size: 13px;
-    color: var(--text-sub);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text);
+    opacity: 0.4;
     background: transparent;
     border: none;
     cursor: none;
     padding: 0;
-    transition: color 0.2s ease;
+    transition: opacity 0.2s ease;
 }
 
 #about-close:hover {
-    color: var(--text);
+    opacity: 1;
 }
 
 #about-content h2 {
     font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: clamp(14px, 1.5vw, 18px);
-    color: var(--text-sub);
+    font-style: normal;
+    font-size: clamp(11px, 1.2vw, 14px);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text);
     font-weight: 400;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    opacity: 0.5;
 }
 
 #about-content h3 {
     font-family: 'Playfair Display', serif;
     font-style: normal;
-    font-size: 12px;
-    color: var(--text-sub);
+    font-size: clamp(11px, 1.2vw, 14px);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text);
     font-weight: 400;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
+    opacity: 0.5;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
 }
 
 #about-content h4 {
     font-family: 'Playfair Display', serif;
     font-style: normal;
-    font-size: 12px;
-    color: var(--text-sub);
+    font-size: clamp(11px, 1.2vw, 14px);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text);
     font-weight: 400;
-    margin-top: 2.5rem;
+    opacity: 0.5;
+    margin-top: 3rem;
 }
 
 #about-content p {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: clamp(15px, 1.6vw, 19px);
+    font-size: clamp(20px, 2.5vw, 36px);
     line-height: 1.8;
     color: var(--text);
     font-weight: 400;
+    text-align: center;
     margin-bottom: 1.5rem;
 }
 
@@ -274,7 +281,7 @@ body {
     width: 40px;
     height: 0.5px;
     background: var(--text-sub);
-    margin: 2rem 0;
+    margin: 2rem auto;
 }
 
 /* ─── Custom cursor ───────────────────────────────────────────────────────── */
@@ -288,10 +295,10 @@ body {
     font-family: 'Playfair Display', serif;
     font-style: italic;
     font-size: 13px;
-    color: var(--text);
+    color: var(--cursor-color);
     opacity: 0;
     transform: translate(14px, -50%);
-    transition: opacity 0.3s ease, color 0.6s ease;
+    transition: opacity 0.3s ease;
     white-space: nowrap;
     user-select: none;
 }
@@ -299,8 +306,8 @@ body {
 /* ─── Mobile ──────────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
-    #about-content {
-        width: 95%;
+    #about-modal {
+        padding: 0 6vw;
     }
 
     #bottom-bar {
