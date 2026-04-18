@@ -72,8 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
         clearImageLayer();
     }
 
-    applyScheme(0);
-
 
     // ─── Landing → Main transition ───────────────────────────────────────────────
 
@@ -186,6 +184,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let queueIdx     = 0;
     let visible      = [];
     const MAX_IMAGES = 8;
+
+    // Now safe to call — clearImageLayer() depends on `visible` being declared
+    applyScheme(0);
 
     const imageLayer = document.getElementById('image-layer');
 
