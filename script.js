@@ -4,10 +4,11 @@
     const cursor = document.getElementById('custom-cursor');
     const label  = document.getElementById('cursor-label');
     if (!cursor) return;
+    let overSwapWord = false;
     document.addEventListener('mousemove', (e) => {
         cursor.style.left    = e.clientX + 'px';
         cursor.style.top     = e.clientY + 'px';
-        cursor.style.opacity = '1';
+        cursor.style.opacity = overSwapWord ? '0' : '1';
         if (label) {
             label.style.left = e.clientX + 'px';
             label.style.top  = e.clientY + 'px';
@@ -17,6 +18,8 @@
         cursor.style.opacity = '0';
         if (label) label.style.opacity = '0';
     });
+    document.addEventListener('swap-word-enter', () => { overSwapWord = true; });
+    document.addEventListener('swap-word-leave', () => { overSwapWord = false; });
 }());
 
 
@@ -25,22 +28,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Color pairs [background, text/accent] ───────────────────────────────────
 
     const COLORS = [
-        ['#EDC700', '#6B3A38', '#FF6B00'],  // gold / dark-red      / orange
-        ['#F7F7F7', '#4E5D61', '#C94040'],  // off-white / slate     / crimson
-        ['#6B3A39', '#8DB8E4', '#F2C94C'],  // dark-red / light-blue / gold
-        ['#4E86DD', '#2E4555', '#FF6B6B'],  // blue / navy           / coral
-        ['#46A85F', '#FF97B3', '#FFE500'],  // green / pink          / yellow
-        ['#f0cfe1', '#E4939A', '#7B3FA0'],  // blush / rose          / purple
-        ['#A7B8C2', '#FFF662', '#FF6B9D'],  // slate-blue / yellow   / hot-pink
-        ['#FE5136', '#FFF662', '#00D4FF'],  // orange-red / yellow   / cyan
-        ['#FE5136', '#E8FBFD', '#AAEE00'],  // orange-red / ice-blue / lime
-        ['#FEA2FD', '#E8FBFD', '#FF0080'],  // lavender / ice-blue   / magenta
-        ['#FFC4FF', '#FF0014', '#0055FF'],  // light-pink / red      / electric-blue
-        ['#F1348A', '#F0E3CD', '#00E5FF'],  // hot-pink / cream      / cyan
-        ['#C9C9CB', '#F73390', '#FFE700'],  // gray / hot-pink       / yellow
-        ['#E6AED3', '#6B3A38', '#4E86DD'],  // dusty-rose / dark-red / blue
-        ['#ffffff', '#000000', '#4E7BE6'],  // white / black         / periwinkle-blue
-        ['#000000', '#ffffff', '#E03030'],  // black / white         / deep-red
+        ['#EDC700', '#6B3A38', '#C96020'],  // gold / dark-red      / burnt-orange
+        ['#F7F7F7', '#4E5D61', '#8B3030'],  // off-white / slate     / deep-crimson
+        ['#6B3A39', '#8DB8E4', '#C8981A'],  // dark-red / light-blue / warm-gold
+        ['#4E86DD', '#2E4555', '#C04848'],  // blue / navy           / muted-coral
+        ['#46A85F', '#FF97B3', '#C8A800'],  // green / pink          / golden
+        ['#f0cfe1', '#E4939A', '#5E2A80'],  // blush / rose          / deep-purple
+        ['#A7B8C2', '#FFF662', '#C04870'],  // slate-blue / yellow   / dark-rose
+        ['#FE5136', '#FFF662', '#009ABF'],  // orange-red / yellow   / teal-blue
+        ['#FE5136', '#E8FBFD', '#80AA00'],  // orange-red / ice-blue / olive-lime
+        ['#FEA2FD', '#E8FBFD', '#A0006A'],  // lavender / ice-blue   / deep-magenta
+        ['#FFC4FF', '#FF0014', '#0040CC'],  // light-pink / red      / deep-blue
+        ['#F1348A', '#F0E3CD', '#009AB0'],  // hot-pink / cream      / deep-cyan
+        ['#C9C9CB', '#F73390', '#C09800'],  // gray / hot-pink       / golden
+        ['#E6AED3', '#6B3A38', '#2E5CB8'],  // dusty-rose / dark-red / calm-blue
+        ['#ffffff', '#000000', '#2E5CB8'],  // white / black         / calm-blue
+        ['#1a1a1a', '#ffffff', '#C02020'],  // dark / white          / deep-red
     ];
 
     let currentColorIndex = 14;
@@ -136,20 +139,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const textBlock = document.getElementById('text-block');
 
-    segments.forEach(seg => {
+    for (let i = 0; i < segments.length; i++) {
+        const seg = segments[i];
         if (seg.type === 'text') {
             textBlock.appendChild(document.createTextNode(seg.content));
         } else {
+            // Check if the next segment is punctuation-only (e.g. trailing period)
+            const nextSeg = segments[i + 1];
+            const trailingPunct = nextSeg && nextSeg.type === 'text'
+                && /^[.,!?]/.test(nextSeg.content.trimStart())
+                && nextSeg.content.trim().length <= 2;
+
+            let parent = textBlock;
+            if (trailingPunct) {
+                const wrapper = document.createElement('span');
+                wrapper.style.whiteSpace = 'nowrap';
+                textBlock.appendChild(wrapper);
+                parent = wrapper;
+            }
+
             const span = document.createElement('span');
             span.className   = 'swap-word';
             span.textContent = wordSets[seg.key].words[0];
             span.dataset.key = seg.key;
             span.addEventListener('mouseenter', () => {
+                document.dispatchEvent(new Event('swap-word-enter'));
                 cursor.style.opacity      = '0';
                 cursorLabel.textContent   = 'click!';
                 cursorLabel.style.opacity = '1';
             });
             span.addEventListener('mouseleave', () => {
+                document.dispatchEvent(new Event('swap-word-leave'));
                 cursor.style.opacity      = '1';
                 cursorLabel.style.opacity = '0';
                 cursorLabel.textContent   = '';
@@ -158,16 +178,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.stopPropagation();
                 cycleWord(span, seg.key);
             });
-            textBlock.appendChild(span);
+            parent.appendChild(span);
+
+            if (trailingPunct) {
+                parent.appendChild(document.createTextNode(nextSeg.content));
+                i++; // skip the next segment — already handled
+            }
         }
-    });
+    }
 
 
     // ─── Word → image map ─────────────────────────────────────────────────────────
 
     const imageMap = {
         // certainty set
-        'certainty':       'assets/certainity.png',
+        'certainty':       'assets/certainty.png',
         'guarantees':      'assets/guarantees.png',
         'permission':      'assets/permission.png',
         'safety':          'assets/safety.png',
@@ -246,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cursorLabel.style.opacity = '0';
         }, 600);
 
-        addImage(currentWord);
+        addImage(next);
     }
 
 
@@ -257,19 +282,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!path) return;
 
         const pair = COLORS[currentColorIndex];
-
         const size = (Math.random() * 25 + 25).toFixed(1) + 'vh';
-        disc.style.background = pair[1];
-        disc.style.width  = size;
-        disc.style.height = size;
-        disc.style.left   = Math.floor(Math.random() * 70) + 'vw';
-        disc.style.top    = Math.floor(Math.random() * 70) + 'vh';
+
+        // Fade out, then reposition + swap image, then fade back in
         disc.style.opacity = '0';
-        setTimeout(() => { disc.style.opacity = '0.5'; }, 400);
-
-        document.querySelector('.player-color').style.background = pair[2];
-
-        discImg.src = path;
+        setTimeout(() => {
+            disc.style.background = pair[1];
+            disc.style.width  = size;
+            disc.style.height = size;
+            disc.style.left   = Math.floor(Math.random() * 70) + 'vw';
+            disc.style.top    = Math.floor(Math.random() * 70) + 'vh';
+            document.querySelector('.player-color').style.background = pair[2];
+            discImg.style.opacity = '0';
+            discImg.src = path;
+            discImg.onload = () => {
+                disc.style.opacity  = '0.5';
+                discImg.style.opacity = '1';
+            };
+        }, 300);
     }
 
     // ─── Color cycling ────────────────────────────────────────────────────────────
