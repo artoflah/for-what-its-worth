@@ -106,13 +106,15 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
+    z-index: 10;
 }
 
 .player-color {
     position: absolute;
     width: 100%;
     height: 100%;
-    z-index: 0;
+    z-index: 11;
+    mix-blend-mode: darken;
 }
 
 /* ─── Text block ──────────────────────────────────────────────────────────── */
