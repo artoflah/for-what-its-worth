@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.background  = pair[0];
         document.body.style.color       = pair[1];
         container.style.background      = pair[0];
-        if (disc) disc.style.background = pair[1];
+        const playerColor = document.querySelector('.player-color');
+        if (playerColor) playerColor.style.background = pair[1];
         root.style.setProperty('--bg',       pair[0]);
         root.style.setProperty('--text',     pair[1]);
         root.style.setProperty('--opposite', pair[0]);
@@ -257,12 +258,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const leftVal = Math.floor(Math.random() * 55) + 'vw';
         const topVal  = Math.floor(Math.random() * 50) + 'vh';
 
-        discImg.src            = path;
-        disc.style.background  = pair[1];
-        disc.style.width       = '360px';
-        disc.style.height      = '360px';
-        disc.style.left        = leftVal;
-        disc.style.top         = topVal;
+        discImg.src  = path;
+        disc.style.width  = '360px';
+        disc.style.height = '360px';
+        disc.style.left   = leftVal;
+        disc.style.top    = topVal;
+        document.querySelector('.player-color').style.background = pair[1];
     }
 
     // ─── Color cycling ────────────────────────────────────────────────────────────
