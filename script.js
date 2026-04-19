@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.background  = pair[0];
         document.body.style.color       = pair[1];
         container.style.background      = pair[0];
+        disc.style.background = pair[1];
         const playerColor = document.querySelector('.player-color');
         if (playerColor) playerColor.style.background = pair[1];
         root.style.setProperty('--bg',       pair[0]);
@@ -254,16 +255,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const path = imageMap[word];
         if (!path) return;
 
-        const pair    = COLORS[currentColorIndex];
-        const leftVal = Math.floor(Math.random() * 55) + 'vw';
-        const topVal  = Math.floor(Math.random() * 50) + 'vh';
+        const pair = COLORS[currentColorIndex];
 
-        discImg.src  = path;
-        disc.style.width  = '360px';
-        disc.style.height = '360px';
-        disc.style.left   = leftVal;
-        disc.style.top    = topVal;
+        disc.style.background = pair[1];
+        disc.style.width  = '46vh';
+        disc.style.height = '46vh';
+        disc.style.left   = Math.floor(Math.random() * 70) + 'vw';
+        disc.style.top    = Math.floor(Math.random() * 70) + 'vh';
+        disc.style.opacity = '0.5';
+
         document.querySelector('.player-color').style.background = pair[1];
+
+        discImg.src = path;
     }
 
     // ─── Color cycling ────────────────────────────────────────────────────────────
