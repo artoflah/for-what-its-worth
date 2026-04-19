@@ -2,115 +2,73 @@
 
 (function () {
     const cursor = document.getElementById('custom-cursor');
+    const label  = document.getElementById('cursor-label');
     if (!cursor) return;
     document.addEventListener('mousemove', (e) => {
         cursor.style.left    = e.clientX + 'px';
         cursor.style.top     = e.clientY + 'px';
         cursor.style.opacity = '1';
+        if (label) {
+            label.style.left = e.clientX + 'px';
+            label.style.top  = e.clientY + 'px';
+        }
     });
     document.addEventListener('mouseleave', () => {
         cursor.style.opacity = '0';
+        if (label) label.style.opacity = '0';
     });
 }());
 
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ─── Color schemes ────────────────────────────────────────────────────────────
+    // ─── Color pairs [background, text/accent] ───────────────────────────────────
 
-    const schemes = [
-        {
-            '--bg':           'rgb(255,196,255)',
-            '--text':         'rgb(255,0,20)',
-            '--text-sub':     'rgba(255,0,20,0.5)',
-            '--accent':       'rgb(255,0,20)',
-            '--highlight':    'rgb(255,0,20)',
-            '--cursor-color': '#0047FF',
-            '--tint-opacity': '0.5'
-        },
-        {
-            '--bg':           'rgb(230,174,211)',
-            '--text':         'rgb(107,58,56)',
-            '--text-sub':     'rgba(107,58,56,0.5)',
-            '--accent':       'rgb(107,58,56)',
-            '--highlight':    'rgb(107,58,56)',
-            '--cursor-color': '#FFE500',
-            '--tint-opacity': '0.5'
-        },
-        {
-            '--bg':           'rgb(167,184,194)',
-            '--text':         'rgb(255,246,98)',
-            '--text-sub':     'rgba(255,246,98,0.5)',
-            '--accent':       'rgb(255,246,98)',
-            '--highlight':    'rgb(255,246,98)',
-            '--cursor-color': '#FF3CAC',
-            '--tint-opacity': '0.5'
-        },
-        {
-            '--bg':           'rgb(247,247,247)',
-            '--text':         'rgb(78,93,97)',
-            '--text-sub':     'rgba(78,93,97,0.5)',
-            '--accent':       'rgb(78,93,97)',
-            '--highlight':    'rgb(78,93,97)',
-            '--cursor-color': '#FF3CAC',
-            '--tint-opacity': '0.5'
-        },
-        {
-            '--bg':           'rgb(254,81,54)',
-            '--text':         'rgb(255,246,98)',
-            '--text-sub':     'rgba(255,246,98,0.5)',
-            '--accent':       'rgb(255,246,98)',
-            '--highlight':    'rgb(255,246,98)',
-            '--cursor-color': '#ffffff',
-            '--tint-opacity': '0.5'
-        },
-        {
-            '--bg':           '#ffffff',
-            '--text':         '#000000',
-            '--text-sub':     'rgba(0,0,0,0.5)',
-            '--accent':       '#000000',
-            '--highlight':    '#0047FF',
-            '--cursor-color': '#FF3CAC',
-            '--tint-opacity': '0.3'
-        },
-        {
-            '--bg':           '#000000',
-            '--text':         '#ffffff',
-            '--text-sub':     'rgba(255,255,255,0.5)',
-            '--accent':       '#ffffff',
-            '--highlight':    '#FFE500',
-            '--cursor-color': '#FF3CAC',
-            '--tint-opacity': '0.5'
-        }
+    const COLORS = [
+        ['#EDC700', '#6B3A38'],
+        ['#F7F7F7', '#4E5D61'],
+        ['#6B3A39', '#8DB8E4'],
+        ['#4E86DD', '#2E4555'],
+        ['#46A85F', '#FF97B3'],
+        ['#f0cfe1', '#E4939A'],
+        ['#A7B8C2', '#FFF662'],
+        ['#FE5136', '#FFF662'],
+        ['#FE5136', '#E8FBFD'],
+        ['#FEA2FD', '#E8FBFD'],
+        ['#FFC4FF', '#FF0014'],
+        ['#F1348A', '#F0E3CD'],
+        ['#C9C9CB', '#F73390'],
+        ['#E6AED3', '#6B3A38'],
+        ['#ffffff', '#000000'],
+        ['#000000', '#ffffff']
     ];
 
-    let schemeIndex = 5;
-    const root      = document.documentElement;
-    const cursor    = document.getElementById('custom-cursor');
-    const disc      = document.getElementById('disc');
-    const container = document.getElementById('container');
-
-    function getCursorColor() {
-        return getComputedStyle(root).getPropertyValue('--cursor-color').trim();
-    }
+    let currentColorIndex = 14;
+    const root        = document.documentElement;
+    const cursor      = document.getElementById('custom-cursor');
+    const cursorLabel = document.getElementById('cursor-label');
+    const disc        = document.getElementById('disc');
+    const container   = document.getElementById('container');
 
     function getTextColor() {
         return getComputedStyle(root).getPropertyValue('--text').trim();
     }
 
-    function applyScheme(idx) {
-        const s = schemes[idx];
-        for (const [prop, val] of Object.entries(s)) {
-            root.style.setProperty(prop, val);
-        }
-        document.body.style.background  = s['--bg'];
-        document.body.style.color       = s['--text'];
-        container.style.background      = s['--bg'];
-        cursor.style.color = getTextColor();
+    function applyColor(index) {
+        const pair = COLORS[index];
+        document.body.style.background  = pair[0];
+        document.body.style.color       = pair[1];
+        container.style.background      = pair[0];
+        if (disc) disc.style.background = pair[1];
+        root.style.setProperty('--bg',        pair[0]);
+        root.style.setProperty('--text',      pair[1]);
+        root.style.setProperty('--highlight', pair[1]);
+        cursor.style.background      = pair[1];
+        cursorLabel.style.color      = pair[1];
     }
 
-    // Apply scheme 6 (index 5 — white/black) immediately before anything else
-    applyScheme(schemeIndex);
+    // Start on white/black (index 14)
+    applyColor(currentColorIndex);
 
 
     // ─── Landing → Main transition ───────────────────────────────────────────────
@@ -183,12 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
             span.textContent = wordSets[seg.key].words[0];
             span.dataset.key = seg.key;
             span.addEventListener('mouseenter', () => {
-                cursor.textContent = 'click';
-                cursor.style.color = getCursorColor();
+                cursorLabel.textContent = 'click!';
+                cursorLabel.style.opacity = '1';
             });
             span.addEventListener('mouseleave', () => {
-                cursor.textContent = 'try your luck';
-                cursor.style.color = getTextColor();
+                cursorLabel.style.opacity = '0';
+                cursorLabel.textContent   = '';
             });
             span.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -203,21 +161,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const imageMap = {
         // certainty set
-        'certainty':       'assets/certainty.png',
+        'certainty':       'assets/certainity.png',
         'guarantees':      'assets/guarantees.png',
         'permission':      'assets/permission.png',
         'safety':          'assets/safety.png',
         'proof':           'assets/proof.png',
         // yourself set
         'yourself':        'assets/yourself.png',
-        'the unknown':     'assets/the-unknown.png',
-        'what scares you': 'assets/what-scares-you.png',
-        'the feeling':     'assets/the-feeling.png',
+        'the unknown':     'assets/theunknown.png',
+        'what scares you': 'assets/whatscaresyou.png',
+        'the feeling':     'assets/thefeeling.png',
         'chance':          'assets/chance.png',
         // precious set
         'precious':        'assets/precious.png',
         'fragile':         'assets/fragile.png',
-        'irreplaceable':   'assets/irreplaceable.png',
+        'irreplaceable':   'assets/irreplacable.png',
         'uncertain':       'assets/uncertain.png',
         'raw':             'assets/raw.png',
         // dreams set
@@ -242,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'lands':           'assets/lands.png',
         'falls':           'assets/falls.png',
         'ends':            'assets/ends.png',
-        'plays out':       'assets/plays-out.png',
+        'plays out':       'assets/playsout.png',
         'unfolds':         'assets/unfolds.png',
         // risk set
         'risk':            'assets/risk.png',
@@ -276,10 +234,10 @@ document.addEventListener('DOMContentLoaded', () => {
             span.style.transform = 'scale(1)';
         }, 120);
 
-        cursor.textContent = next;
-        cursor.style.color = getCursorColor();
+        cursorLabel.textContent = next;
+        cursorLabel.style.opacity = '1';
         setTimeout(() => {
-            cursor.textContent = 'try your luck';
+            cursorLabel.style.opacity = '0';
         }, 600);
 
         addImage(currentWord);
@@ -301,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         disc.style.height  = size;
         disc.style.left    = leftVal;
         disc.style.top     = topVal;
-        disc.style.opacity = '0.85';
+        disc.style.opacity = '0.5';
         disc.innerHTML     = '';
 
         const img = document.createElement('img');
@@ -315,18 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const colorBtn = document.getElementById('color-btn');
 
     colorBtn.addEventListener('click', () => {
-        schemeIndex = (schemeIndex + 1) % schemes.length;
-        applyScheme(schemeIndex);
-
-        // Reset all swap words to index 0
-        document.querySelectorAll('.swap-word').forEach(word => {
-            const key = word.dataset.key;
-            wordSets[key].index  = 0;
-            word.textContent     = wordSets[key].words[0];
-        });
-
-        // Cursor back to --text of new scheme
-        cursor.style.color = getTextColor();
+        currentColorIndex = (currentColorIndex + 1) % COLORS.length;
+        applyColor(currentColorIndex);
 
         colorBtn.textContent = '( changing\u2026 )';
         setTimeout(() => { colorBtn.textContent = '( color )'; }, 400);

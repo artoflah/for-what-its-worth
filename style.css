@@ -1,11 +1,6 @@
 :root {
-    --bg:           #ffffff;
-    --text:         #000000;
-    --text-sub:     rgba(0,0,0,0.5);
-    --accent:       #000000;
-    --highlight:    #0047FF;
-    --cursor-color: #FF3CAC;
-    --tint-opacity: 0.3;
+    --bg:   #ffffff;
+    --text: #000000;
 }
 
 *, *::before, *::after {
@@ -97,15 +92,11 @@ body {
 #disc {
     position: fixed;
     overflow: hidden;
+    mix-blend-mode: darken;
+    opacity: 0.5;
+    z-index: 1;
     width: 0;
     height: 0;
-    bottom: 2rem;
-    left: 2rem;
-    z-index: 1;
-    background: inherit;
-    mix-blend-mode: darken;
-    opacity: 0;
-    transition: opacity 0.4s ease;
 }
 
 /* ─── Text block ──────────────────────────────────────────────────────────── */
@@ -133,7 +124,6 @@ body {
 }
 
 .swap-word:hover {
-    color: var(--highlight);
     opacity: 0.6;
 }
 
@@ -165,17 +155,18 @@ body {
     font-family: 'Playfair Display', serif;
     font-style: normal;
     font-size: 15px;
-    color: var(--text-sub);
+    color: var(--text);
+    opacity: 0.5;
     background: transparent;
     border: none;
     cursor: none;
     padding: 0;
-    transition: color 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
 #color-btn:hover,
 #about-btn:hover {
-    color: var(--text);
+    opacity: 1;
 }
 
 /* ─── About modal ─────────────────────────────────────────────────────────── */
@@ -283,13 +274,29 @@ body {
 .about-divider {
     width: 40px;
     height: 0.5px;
-    background: var(--text-sub);
+    background: var(--text);
+    opacity: 0.5;
     margin: 2rem auto;
 }
 
 /* ─── Custom cursor ───────────────────────────────────────────────────────── */
 
 #custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background: var(--text);
+    border-radius: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999999;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease, background 0.2s ease;
+}
+
+#cursor-label {
     position: fixed;
     top: 0;
     left: 0;
@@ -301,7 +308,7 @@ body {
     color: var(--text);
     opacity: 0;
     transform: translate(14px, -50%);
-    transition: opacity 0.3s ease;
+    transition: opacity 0.2s ease;
     white-space: nowrap;
     user-select: none;
 }
