@@ -59,12 +59,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.background  = pair[0];
         document.body.style.color       = pair[1];
         container.style.background      = pair[0];
-        if (disc) disc.style.background = pair[1];
-        root.style.setProperty('--bg',        pair[0]);
-        root.style.setProperty('--text',      pair[1]);
-        root.style.setProperty('--highlight', pair[1]);
-        cursor.style.background      = pair[1];
-        cursorLabel.style.color      = pair[1];
+        if (disc) {
+            disc.style.background = pair[1];
+            if (pair[0] === '#000000') {
+                disc.style.mixBlendMode = 'lighten';
+                disc.style.opacity      = '0.85';
+            } else {
+                disc.style.mixBlendMode = 'darken';
+                disc.style.opacity      = '0.5';
+            }
+        }
+        root.style.setProperty('--bg',       pair[0]);
+        root.style.setProperty('--text',     pair[1]);
+        root.style.setProperty('--opposite', pair[0]);
+        cursor.style.background   = pair[1];
+        cursorLabel.style.color   = pair[0];
     }
 
     // Start on white/black (index 14)
@@ -141,10 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
             span.textContent = wordSets[seg.key].words[0];
             span.dataset.key = seg.key;
             span.addEventListener('mouseenter', () => {
-                cursorLabel.textContent = 'click!';
+                cursor.style.opacity      = '0';
+                cursorLabel.textContent   = 'click!';
                 cursorLabel.style.opacity = '1';
             });
             span.addEventListener('mouseleave', () => {
+                cursor.style.opacity      = '1';
                 cursorLabel.style.opacity = '0';
                 cursorLabel.textContent   = '';
             });
@@ -250,17 +261,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const path = imageMap[word];
         if (!path) return;
 
-        const sizes  = ['28vh', '32vh', '36vh', '40vh', '44vh'];
-        const size   = sizes[Math.floor(Math.random() * sizes.length)];
+        const pair    = COLORS[currentColorIndex];
+        const sizes   = ['28vh', '32vh', '36vh', '40vh', '44vh'];
+        const size    = sizes[Math.floor(Math.random() * sizes.length)];
         const leftVal = Math.floor(Math.random() * 55) + 'vw';
         const topVal  = Math.floor(Math.random() * 50) + 'vh';
 
-        disc.style.width   = size;
-        disc.style.height  = size;
-        disc.style.left    = leftVal;
-        disc.style.top     = topVal;
-        disc.style.opacity = '0.5';
-        disc.innerHTML     = '';
+        disc.style.width      = size;
+        disc.style.height     = size;
+        disc.style.left       = leftVal;
+        disc.style.top        = topVal;
+        disc.style.background = pair[1];
+        if (pair[0] === '#000000') {
+            disc.style.mixBlendMode = 'lighten';
+            disc.style.opacity      = '0.85';
+        } else {
+            disc.style.mixBlendMode = 'darken';
+            disc.style.opacity      = '0.5';
+        }
+        disc.innerHTML = '';
 
         const img = document.createElement('img');
         img.src           = path;

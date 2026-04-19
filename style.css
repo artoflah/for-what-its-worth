@@ -97,6 +97,7 @@ body {
     z-index: 1;
     width: 0;
     height: 0;
+    background: transparent;
 }
 
 /* ─── Text block ──────────────────────────────────────────────────────────── */
@@ -124,6 +125,7 @@ body {
 }
 
 .swap-word:hover {
+    color: var(--opposite) !important;
     opacity: 0.6;
 }
 
