@@ -25,22 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Color pairs [background, text/accent] ───────────────────────────────────
 
     const COLORS = [
-        ['#EDC700', '#6B3A38'],
-        ['#F7F7F7', '#4E5D61'],
-        ['#6B3A39', '#8DB8E4'],
-        ['#4E86DD', '#2E4555'],
-        ['#46A85F', '#FF97B3'],
-        ['#f0cfe1', '#E4939A'],
-        ['#A7B8C2', '#FFF662'],
-        ['#FE5136', '#FFF662'],
-        ['#FE5136', '#E8FBFD'],
-        ['#FEA2FD', '#E8FBFD'],
-        ['#FFC4FF', '#FF0014'],
-        ['#F1348A', '#F0E3CD'],
-        ['#C9C9CB', '#F73390'],
-        ['#E6AED3', '#6B3A38'],
-        ['#ffffff', '#000000'],
-        ['#000000', '#ffffff']
+        ['#EDC700', '#6B3A38', '#FF6B00'],  // gold / dark-red      / orange
+        ['#F7F7F7', '#4E5D61', '#C94040'],  // off-white / slate     / crimson
+        ['#6B3A39', '#8DB8E4', '#F2C94C'],  // dark-red / light-blue / gold
+        ['#4E86DD', '#2E4555', '#FF6B6B'],  // blue / navy           / coral
+        ['#46A85F', '#FF97B3', '#FFE500'],  // green / pink          / yellow
+        ['#f0cfe1', '#E4939A', '#7B3FA0'],  // blush / rose          / purple
+        ['#A7B8C2', '#FFF662', '#FF6B9D'],  // slate-blue / yellow   / hot-pink
+        ['#FE5136', '#FFF662', '#00D4FF'],  // orange-red / yellow   / cyan
+        ['#FE5136', '#E8FBFD', '#AAEE00'],  // orange-red / ice-blue / lime
+        ['#FEA2FD', '#E8FBFD', '#FF0080'],  // lavender / ice-blue   / magenta
+        ['#FFC4FF', '#FF0014', '#0055FF'],  // light-pink / red      / electric-blue
+        ['#F1348A', '#F0E3CD', '#00E5FF'],  // hot-pink / cream      / cyan
+        ['#C9C9CB', '#F73390', '#FFE700'],  // gray / hot-pink       / yellow
+        ['#E6AED3', '#6B3A38', '#4E86DD'],  // dusty-rose / dark-red / blue
+        ['#ffffff', '#000000', '#4E7BE6'],  // white / black         / periwinkle-blue
+        ['#000000', '#ffffff', '#E03030'],  // black / white         / deep-red
     ];
 
     let currentColorIndex = 14;
@@ -62,12 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
         container.style.background      = pair[0];
         disc.style.background = pair[1];
         const playerColor = document.querySelector('.player-color');
-        if (playerColor) playerColor.style.background = pair[1];
+        if (playerColor) playerColor.style.background = pair[2];
         root.style.setProperty('--bg',       pair[0]);
         root.style.setProperty('--text',     pair[1]);
         root.style.setProperty('--opposite', pair[0]);
+        root.style.setProperty('--hover',    pair[2]);
         cursor.style.background   = pair[1];
-        cursorLabel.style.color   = pair[0];
+        cursorLabel.style.color   = pair[1];
     }
 
     // Start on white/black (index 14)
@@ -257,14 +258,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const pair = COLORS[currentColorIndex];
 
+        const size = (Math.random() * 25 + 25).toFixed(1) + 'vh';
         disc.style.background = pair[1];
-        disc.style.width  = '46vh';
-        disc.style.height = '46vh';
+        disc.style.width  = size;
+        disc.style.height = size;
         disc.style.left   = Math.floor(Math.random() * 70) + 'vw';
         disc.style.top    = Math.floor(Math.random() * 70) + 'vh';
-        disc.style.opacity = '0.5';
+        disc.style.opacity = '0';
+        setTimeout(() => { disc.style.opacity = '0.5'; }, 400);
 
-        document.querySelector('.player-color').style.background = pair[1];
+        document.querySelector('.player-color').style.background = pair[2];
 
         discImg.src = path;
     }

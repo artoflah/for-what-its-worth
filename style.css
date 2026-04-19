@@ -96,6 +96,7 @@ body {
     background: inherit;
     mix-blend-mode: darken;
     opacity: 0;
+    transition: opacity 0.6s ease;
 }
 
 #disc img {
@@ -139,8 +140,8 @@ body {
 }
 
 .swap-word:hover {
-    color: var(--opposite) !important;
-    opacity: 0.6;
+    color: var(--hover) !important;
+    opacity: 1;
 }
 
 /* ─── Blur when modal open ────────────────────────────────────────────────── */
