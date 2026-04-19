@@ -92,12 +92,18 @@ body {
 #disc {
     position: fixed;
     overflow: hidden;
-    mix-blend-mode: darken;
-    opacity: 0.5;
     z-index: 1;
     width: 0;
     height: 0;
-    background: transparent;
+}
+
+.disc-tint {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    mix-blend-mode: color;
+    opacity: 0.6;
 }
 
 /* ─── Text block ──────────────────────────────────────────────────────────── */

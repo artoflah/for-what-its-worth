@@ -59,16 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.background  = pair[0];
         document.body.style.color       = pair[1];
         container.style.background      = pair[0];
-        if (disc) {
-            disc.style.background = pair[1];
-            if (pair[0] === '#000000') {
-                disc.style.mixBlendMode = 'lighten';
-                disc.style.opacity      = '0.85';
-            } else {
-                disc.style.mixBlendMode = 'darken';
-                disc.style.opacity      = '0.5';
-            }
-        }
+        const tint = disc ? disc.querySelector('.disc-tint') : null;
+        if (tint) tint.style.background = pair[1];
         root.style.setProperty('--bg',       pair[0]);
         root.style.setProperty('--text',     pair[1]);
         root.style.setProperty('--opposite', pair[0]);
@@ -267,24 +259,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const leftVal = Math.floor(Math.random() * 55) + 'vw';
         const topVal  = Math.floor(Math.random() * 50) + 'vh';
 
-        disc.style.width      = size;
-        disc.style.height     = size;
-        disc.style.left       = leftVal;
-        disc.style.top        = topVal;
-        disc.style.background = pair[1];
-        if (pair[0] === '#000000') {
-            disc.style.mixBlendMode = 'lighten';
-            disc.style.opacity      = '0.85';
-        } else {
-            disc.style.mixBlendMode = 'darken';
-            disc.style.opacity      = '0.5';
-        }
-        disc.innerHTML = '';
+        disc.style.width  = size;
+        disc.style.height = size;
+        disc.style.left   = leftVal;
+        disc.style.top    = topVal;
+        disc.innerHTML    = '';
 
         const img = document.createElement('img');
         img.src           = path;
-        img.style.cssText = `width:100%;height:100%;object-fit:cover;display:block;`;
+        img.style.cssText = `position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;`;
+
+        const tint = document.createElement('div');
+        tint.className        = 'disc-tint';
+        tint.style.background = pair[1];
+
         disc.appendChild(img);
+        disc.appendChild(tint);
     }
 
     // ─── Color cycling ────────────────────────────────────────────────────────────
