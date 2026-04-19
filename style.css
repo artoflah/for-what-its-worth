@@ -92,7 +92,7 @@ body {
 #disc {
     overflow: hidden;
     position: fixed;
-    z-index: -9;
+    z-index: 10;
     background: inherit;
     mix-blend-mode: darken;
     opacity: 0;
